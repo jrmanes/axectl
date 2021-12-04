@@ -19,6 +19,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -79,6 +80,7 @@ var (
 	sonarUser             = "admin"
 	sonarPass             = "admin123."
 	project, organization string
+	tokensFolder          = "~/.piktoctl/sonar/tokens/"
 )
 
 func init() {
@@ -90,9 +92,11 @@ func init() {
 	// sonarCmd.PersistentFlags().String("foo", "", "A help for foo")
 	// sonarCmd.Flags().String("", "", "A help for foo")
 	sonarCmd.PersistentFlags().BoolP("show", "", true, "Show all requirements needed")
-	sonarCmd.PersistentFlags().BoolP("install", "i", true, "Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
+
+	sonarCmd.PersistentFlags().BoolP("install", "i", true, "Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
+
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
 	rootCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
 	rootCmd.PersistentFlags().StringP("project", "p", "test-project", "You can add one project name or multiple separated by comas.")
@@ -149,6 +153,9 @@ func scan() {
 		fmt.Println(path)
 		fmt.Println("-----------------------------------")
 
+		// get token value if exists
+		token := GetTokenInFile(p)
+
 		// removed last character - new line
 		path = path[:len(path)-1]
 
@@ -181,7 +188,7 @@ func scan() {
 -Dsonar.exclusions="**/node_modules/**" \
 -Dsonar.inclusions="**" \
 -Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx" \
--Dsonar.login=e2064e714ab865e633c2d026c0bc1bbb5f8d940e`
+-Dsonar.login=`+token
 
 		fmt.Println("command: ", command)
 
@@ -419,7 +426,8 @@ func createProjectToken() {
 			home, err := os.UserHomeDir()
 			cobra.CheckErr(err)
 
-			configHome := filepath.Join(home, "/.piktoctl/sonar/tokens/")
+			// Store the content insisde ~/.piktoctl/soanr/tokens/
+			configHome := filepath.Join(home, tokensFolder)
 			fileInPath := filepath.Join(configHome, token.Name)
 			err = CreateFileInPath(configHome, fileInPath)
 			if err != nil {
@@ -453,4 +461,22 @@ func ShowManualScan() {
    -e SONAR_LOGIN=<YOUR-TOKEN> \
    -v "$(pwd):/usr/src" \
    sonarsource/sonar-scanner-cli`)
+}
+
+// GetTokenInFile check the content inside the file and return it
+func GetTokenInFile(tokenName string) string {
+	// Get current user directory
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal( err )
+	}
+	tokenValue := dirname + "/.piktoctl/sonar/tokens/" + tokenName
+
+	t, err2 := ioutil.ReadFile(tokenValue) // just pass the file name
+	if err2 != nil {
+		fmt.Print(err2)
+	}
+	token := string(t)
+
+	return token
 }
