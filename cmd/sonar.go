@@ -44,6 +44,18 @@ Scan projects.`,
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
 
+		if cmd.Flags().Changed("user") {
+			user, _ = cmd.Flags().GetString("user")
+			userData := strings.Split(user, ":")
+			fmt.Println("New user config:", user)
+			fmt.Println("New user data:", userData)
+
+			sonarUser             = userData[0]
+			sonarPass             = userData[1]
+
+			fmt.Println("New user config:", sonarUser, sonarPass)
+		}
+
 		if cmd.Flags().Changed("show") {
 			show()
 		}
@@ -79,7 +91,7 @@ var (
 	fileName              = "docker-compose.piktochart-sonarqube"
 	sonarUser             = "admin"
 	sonarPass             = "admin123."
-	project, organization string
+	project, organization, user string
 	tokensFolder          = "/.piktoctl/sonar/tokens/"
 )
 
@@ -91,6 +103,7 @@ func init() {
 	// and all subcommands, e.g.:
 	// sonarCmd.PersistentFlags().String("foo", "", "A help for foo")
 	// sonarCmd.Flags().String("", "", "A help for foo")
+
 	sonarCmd.PersistentFlags().BoolP("show", "", true, "Show all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 
@@ -102,6 +115,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("project", "p", "test-project", "You can add one project name or multiple separated by comas.")
 	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Run the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
+	sonarCmd.PersistentFlags().BoolP("user", "u", true, "Use your user:password  -> Example: admin:admin123.")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
