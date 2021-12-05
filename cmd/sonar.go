@@ -355,9 +355,9 @@ func createFileWithContent(path string, content string) string {
 
 // createProject generates the project in SonarQube
 func createProject() {
-	fmt.Println("[INFO] -------------------------------------")
+	fmt.Println("[INFO] --------------------------------------------------------------")
 	fmt.Println("[INFO] 💡 The organization to create the project is: ", organization)
-	fmt.Println("[INFO] -------------------------------------")
+	fmt.Println("[INFO] --------------------------------------------------------------")
 
 	projects := strings.Split(project, ",")
 	// crate the project in Sonar
