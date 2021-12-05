@@ -80,7 +80,7 @@ var (
 	sonarUser             = "admin"
 	sonarPass             = "admin123."
 	project, organization string
-	tokensFolder          = "~/.piktoctl/sonar/tokens/"
+	tokensFolder          = "/.piktoctl/sonar/tokens/"
 )
 
 func init() {
@@ -154,7 +154,10 @@ func scan() {
 		fmt.Println("-----------------------------------")
 
 		// get token value if exists
-		token := GetTokenInFile(p)
+		token, err := GetTokenInFile(p)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		// removed last character - new line
 		path = path[:len(path)-1]
@@ -334,12 +337,14 @@ volumes:
 
 // createFileWithContent generates the docker file in the path specified
 func createFileWithContent(path string, content string) string {
+	// create file
 	f, err := os.Create(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
+	// write content
 	_, err2 := f.WriteString(content)
 	if err2 != nil {
 		log.Fatal(err2)
@@ -355,7 +360,7 @@ func createProject() {
 	fmt.Println("[INFO] -------------------------------------")
 
 	projects := strings.Split(project, ",")
-	// crate the project in SQ
+	// crate the project in Sonar
 	for _, p := range projects {
 		fmt.Println("[INFO] 📚 Project to create: ", p)
 
@@ -399,49 +404,60 @@ func createProjectToken() {
 	for _, p := range projects {
 		fmt.Println("[INFO] 💡 Project to create the token: ", p)
 
-		params := url.Values{}
-		params.Add("name", p)
-		body := strings.NewReader(params.Encode())
+		// Get info from the actual tokens configuration
+		token, err := GetTokenInFile(p)
+		if err != nil && token == "" {
+		//if token == "" {
+			fmt.Println("[INFO] ✔️ Creating new token for project: ", p)
 
-		req, err := http.NewRequest("POST", "http://localhost:9000/api/user_tokens/generate", body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		req.SetBasicAuth(sonarUser, sonarPass)
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			params := url.Values{}
+			params.Add("name", p)
+			body := strings.NewReader(params.Encode())
 
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if resp.StatusCode == 200 {
-			token := TokenResponse{}
-			err2 := json.NewDecoder(resp.Body).Decode(&token)
-			if err2 != nil {
+			req, err := http.NewRequest("POST", "http://localhost:9000/api/user_tokens/generate", body)
+			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println("[INFO]: ", token.Name, "=", token.Token)
+			req.SetBasicAuth(sonarUser, sonarPass)
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-			home, err := os.UserHomeDir()
-			cobra.CheckErr(err)
-
-			// Store the content insisde ~/.piktoctl/soanr/tokens/
-			configHome := filepath.Join(home, tokensFolder)
-			fileInPath := filepath.Join(configHome, token.Name)
-			err = CreateFileInPath(configHome, fileInPath)
+			resp, err := http.DefaultClient.Do(req)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			tokenFile := filepath.Join(configHome, token.Name)
-			createFileWithContent(tokenFile, token.Token)
+			// Check response, if it's ok, store the token into the FS
+			if resp.StatusCode == 200 {
+				token := TokenResponse{}
+				err2 := json.NewDecoder(resp.Body).Decode(&token)
+				if err2 != nil {
+					log.Fatal(err)
+				}
+				fmt.Println("[INFO]: ", token.Name, "=", token.Token)
+
+				home, err := os.UserHomeDir()
+				cobra.CheckErr(err)
+
+				// Store the content insisde ~/.piktoctl/sonar/tokens/
+				configHome := filepath.Join(home, tokensFolder)
+				fileInPath := filepath.Join(configHome, token.Name)
+
+				err = CreateFileInPath(configHome, fileInPath)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				tokenFile := filepath.Join(configHome, token.Name)
+				createFileWithContent(tokenFile, token.Token)
+			} else {
+				fmt.Println("[ERROR] Failed token creation, it's possible that the token already exists, for check it, got to:")
+				fmt.Println("[ERROR] Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
+				fmt.Println("[ERROR] http://localhost:9000/account/security")
+			}
 		} else {
-			fmt.Println("[ERROR] Failed token creation, it's possible that the token already exists, for check it, got to:")
-			fmt.Println("[ERROR] Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
-			fmt.Println("[ERROR] http://localhost:9000/account/security")
+			fmt.Println("[INFO] 📜️ Using existing token for project: ", p)
 		}
-		defer resp.Body.Close()
+		fmt.Println("[INFO] --------------------------------------------------------")
 	}
 
 }
@@ -464,19 +480,20 @@ func ShowManualScan() {
 }
 
 // GetTokenInFile check the content inside the file and return it
-func GetTokenInFile(tokenName string) string {
+func GetTokenInFile(tokenName string) (string, error) {
 	// Get current user directory
 	dirname, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal( err )
+		log.Println("user home dir not found...")
+		return "", err
 	}
 	tokenValue := dirname + "/.piktoctl/sonar/tokens/" + tokenName
 
 	t, err2 := ioutil.ReadFile(tokenValue) // just pass the file name
 	if err2 != nil {
-		fmt.Print(err2)
+		return "", err2
 	}
 	token := string(t)
 
-	return token
+	return token, nil
 }
