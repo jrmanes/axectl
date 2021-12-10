@@ -42,7 +42,7 @@ Start the container.
 Scan projects.`,
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			cmd.Help()
+			cmd.Usage()
 			os.Exit(0)
 		}
 		return nil
