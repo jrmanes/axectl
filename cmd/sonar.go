@@ -121,9 +121,9 @@ func init() {
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
 	rootCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
 	rootCmd.PersistentFlags().StringP("project", "p", "test-project", "You can add one project name or multiple separated by comas.")
-	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Run the SonarQube container")
+	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Start running the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
-	sonarCmd.PersistentFlags().BoolP("user", "u", true, "Use your user:password  -> Example: admin:admin123.")
+	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
