@@ -40,10 +40,18 @@ var sonarCmd = &cobra.Command{
 You will be able to configure a SonarQube with docker for local development.
 Start the container.
 Scan projects.`,
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
 
+		// check if the user and password were provided
 		if cmd.Flags().Changed("user") {
 			user, _ = cmd.Flags().GetString("user")
 			userData := strings.Split(user, ":")
