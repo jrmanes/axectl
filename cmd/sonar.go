@@ -162,9 +162,12 @@ func status() {
 
 // scan check every project and scan it on sonar
 func scan() {
+	now := time.Now()
+
 	fmt.Println("[INFO] 🔭 Scanning projects...")
 
 	projects := strings.Split(project, ",")
+
 	// crate the project in SQ
 	for _, p := range projects {
 		fmt.Println("[INFO] 🔭 Scanning project...", p)
@@ -174,9 +177,6 @@ func scan() {
 		}
 		path := string(out)
 		strings.Replace(path, `\n`, "\n", -1)
-		fmt.Println("-----------------------------------")
-		fmt.Println(path)
-		fmt.Println("-----------------------------------")
 
 		// get token value if exists
 		token, err := GetTokenInFile(p)
@@ -187,35 +187,38 @@ func scan() {
 		// removed last character - new line
 		path = path[:len(path)-1]
 
-		// TODO: check if docker execution worth it
-		//		command := `docker run \
-		//--rm \
-		//--network=tmp_sonar \
-		//-e SONAR_HOST_URL="http://sonarqube:9000" \
-		//-v `
-		//		mount := `:/root/src sonarsource/sonar-scanner-cli \
-		//-Dsonar.projectKey=`+p+` \
-		//-Dsonar.sonar.projectName=`+p+` \
-		//-Dsonar.sonar.projectVersion=1.0 \
-		//-Dsonar.scm.disabled=true \
-		//-Dsonar.sources=. \
-		//-Dsonar.sonar.host.url=http://sonarqube:9000 \
-		//-Dsonar.login=e2064e714ab865e633c2d026c0bc1bbb5f8d940e`
-		//
-		//		s := []string{command, path, mount}
-		//		v := strings.Join(s, "")
-
-		// TODO: check token from file generated
-		// TODO: verify source variable
-
 		err = SonarScanner(p, token)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
+	fmt.Println("[INFO] ---------------------------- ")
+	fmt.Println("[INFO] Elapse: ", time.Since(now))
+	fmt.Println("[INFO] ---------------------------- ")
 }
 
+// SonarScanner executes the scanner of code
 func SonarScanner(p, token string) error {
+	// TODO: check if docker execution worth it
+	//command := `docker run \
+	//--rm \
+	//--network=tmp_sonar \
+	//-e SONAR_HOST_URL="http://sonarqube:9000" \
+	//-v /home/joseramon/Tools/piktostory/:/root/src sonarsource/sonar-scanner-cli \
+	//-Dsonar.projectKey=`+p+` \
+	//-Dsonar.sonar.projectName=`+p+` \
+	//-Dsonar.sonar.projectVersion=1.0 \
+	//-Dsonar.scm.disabled=true \
+	//-Dsonar.sources=./ \
+	//-Dsonar.sonar.host.url=http://sonarqube:9000 \
+	//-Dsonar.login=`+token
+
+	// chekk if command: sonar-scanner exists in path
+	exists := commandExists("sonar-scanner")
+	if !exists {
+		log.Fatal(exists)
+	}
+
 	command := `sonar-scanner  \
 -Dsonar.host.url=http://localhost:9000 \
 -Dsonar.projectKey=` + p + ` \
@@ -229,7 +232,7 @@ func SonarScanner(p, token string) error {
 	fmt.Println("[INFO] ---------------")
 	fmt.Println("command: ", command)
 	fmt.Println("[INFO] ---------------")
-
+//
 	cmd := exec.Command("bash", "-c", command)
 
 	cmd.Stdin = os.Stdin
@@ -237,7 +240,7 @@ func SonarScanner(p, token string) error {
 
 	err := cmd.Run()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	return nil
@@ -532,4 +535,10 @@ func GetTokenInFile(tokenName string) (string, error) {
 	token := string(t)
 
 	return token, nil
+}
+
+// commandExists verify if a command exists in path
+func commandExists(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
 }
