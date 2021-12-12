@@ -18,6 +18,7 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -40,13 +41,18 @@ var sonarCmd = &cobra.Command{
 You will be able to configure a SonarQube with docker for local development.
 Start the container.
 Scan projects.`,
-	//PreRunE: func(cmd *cobra.Command, args []string) error {
-	//	if len(args) == 0 {
-	//		cmd.Usage()
-	//		os.Exit(0)
-	//	}
-	//	return nil
-	//},
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+
+		flag.Parse()
+		tail := flag.Args()
+		fmt.Printf("Tail: %+q\n", tail)
+		//if len(args) == 0 {
+		//	cmd.Usage()
+		//	os.Exit(0)
+		//}
+		//return nil
+	},
+
 	Run: func(cmd *cobra.Command, args []string) {
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
