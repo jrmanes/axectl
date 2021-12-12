@@ -143,8 +143,65 @@ func show() {
 
 // install the needed software
 func install() {
-	// TODO
-	fmt.Println("TODO: install")
+	// TODO: allow installation for MacOS & Windows
+
+	// Install Linux Requirements
+	installSQLinux()
+}
+
+// installSQLinux Install SonarQube packages needed for Linux environments
+func installSQLinux()  {
+	packages := []string{"docker", "docker-compose", "wget", "unzip"}
+
+	for _, p := range packages {
+		fmt.Println("[INFO] 📦 Installing package: ", p)
+
+		cmd := exec.Command( "sudo", "apt", "install", "-y", p)
+
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	fmt.Println("[INFO] 📦 Download package Sonar Scanner... ")
+	cmd := exec.Command( "wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("[INFO] 📦 Unzip package Sonar Scanner... ")
+	cmd2 := exec.Command( "unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
+	err = cmd2.Run()
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println("[INFO] 📦 Moving package Sonar Scanner to /usr/local/bin")
+	cmd3 := exec.Command( "mv", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
+	cmd3.Stdin = os.Stdin
+	cmd3.Stdout = os.Stdout
+
+	err = cmd3.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("[INFO] 📦 Cleaning temporary path...")
+	cmd4 := exec.Command( "rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
+	cmd4.Stdin = os.Stdin
+	cmd4.Stdout = os.Stdout
+
+	err = cmd4.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // status check the status of the containers
@@ -437,16 +494,13 @@ func createProjectToken() {
 	fmt.Println("[INFO] 💡 The organization to create the token is: ", organization)
 	fmt.Println("[INFO] --------------------------------------------------------")
 
-	// TODO: Check if the token already exists in the FS
 	projects := strings.Split(project, ",")
 	// crate the project in SQ
 	for _, p := range projects {
 		fmt.Println("[INFO] 💡 Project to create the token: ", p)
-
 		// Get info from the actual tokens configuration
 		token, err := GetTokenInFile(p)
 		if err != nil && token == "" {
-		//if token == "" {
 			fmt.Println("[INFO] ✔️ Creating new token for project: ", p)
 
 			params := url.Values{}

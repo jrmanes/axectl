@@ -7,9 +7,8 @@
 - [x] Check containers status
 - [x] Generate project in Sonar
 - [x] Generate token for project
-- [ ] Create config path
-  - [ ] Create tokens inside the config path
-  - [ ] List tokens
+- [x] Create config path
+  - [x] Create tokens inside the config path
+  - [x] List tokens
   - [ ] Delete tokens
-- [ ] 
 - [ ] Print logs
