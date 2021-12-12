@@ -18,6 +18,7 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -42,7 +43,9 @@ Start the container.
 Scan projects.`,
 // Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 1 {
+		flag.Parse()
+		tail := flag.Args()
+		if len(tail) < 1 {
 			cmd.Usage()
 			os.Exit(0)
 		}
@@ -64,7 +67,6 @@ Scan projects.`,
 
 			fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
 		}
-
 		if cmd.Flags().Changed("show") {
 			show()
 		}
@@ -121,7 +123,7 @@ func init() {
 
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
 	rootCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
-	rootCmd.PersistentFlags().StringP("project", "p", "test-project", "You can add one project name or multiple separated by comas.")
+	rootCmd.PersistentFlags().StringP("project", "p", "", "You can add one project name or multiple separated by comas.")
 	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Start running the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
 	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
@@ -206,7 +208,15 @@ func scan() {
 		// TODO: check token from file generated
 		// TODO: verify source variable
 
-		command := `sonar-scanner  \
+		err = SonarScanner(p, token)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func SonarScanner(p, token string) error {
+	command := `sonar-scanner  \
 -Dsonar.host.url=http://localhost:9000 \
 -Dsonar.projectKey=` + p + ` \
 -Dsonar.sonar.projectName=` + p + ` \
@@ -216,21 +226,21 @@ func scan() {
 -Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx" \
 -Dsonar.login=`+token
 
-		fmt.Println("[INFO] ---------------")
-		fmt.Println("command: ", command)
-		fmt.Println("[INFO] ---------------")
+	fmt.Println("[INFO] ---------------")
+	fmt.Println("command: ", command)
+	fmt.Println("[INFO] ---------------")
 
-		cmd := exec.Command("bash", "-c", command)
+	cmd := exec.Command("bash", "-c", command)
 
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
 
-		err = cmd.Run()
-		if err != nil {
-			panic(err)
-		}
-
+	err := cmd.Run()
+	if err != nil {
+		return err
 	}
+
+	return nil
 }
 
 // run configure and initialize the containers
