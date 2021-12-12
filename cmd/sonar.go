@@ -151,7 +151,7 @@ func install() {
 
 // installSQLinux Install SonarQube packages needed for Linux environments
 func installSQLinux()  {
-	packages := []string{"docker", "docker-compose", "wget", "unzip"}
+	packages := []string{"docker", "docker-compose", "wget", "unzip", "openjdk-11-jre-headless", "default-jre", "default-jdk"}
 
 	fmt.Println("[INFO] 📦 Update package list... ")
 	cmd := exec.Command( "sudo", "apt", "update")
@@ -163,14 +163,13 @@ func installSQLinux()  {
 		log.Fatal(err)
 	}
 
+	// Loop inside all packages and install them one by one
 	for _, p := range packages {
 		fmt.Println("[INFO] 📦 Installing package: ", p)
 
 		cmd := exec.Command( "sudo", "apt", "install", "-y", p)
-
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
-
 		err := cmd.Run()
 		if err != nil {
 			log.Fatal(err)
@@ -178,37 +177,63 @@ func installSQLinux()  {
 	}
 
 	fmt.Println("[INFO] 📦 Download package Sonar Scanner... ")
-	cmd := exec.Command( "wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
+	cmd = exec.Command( "wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("[INFO] 📦 Unzip package Sonar Scanner... ")
-	cmd2 := exec.Command( "unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
-	err = cmd2.Run()
+	cmd = exec.Command( "unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
+	err = cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
 
 	fmt.Println("[INFO] 📦 Moving package Sonar Scanner to /usr/local/bin")
-	cmd3 := exec.Command( "mv", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
-	cmd3.Stdin = os.Stdin
-	cmd3.Stdout = os.Stdout
-
-	err = cmd3.Run()
+	cmd = exec.Command( "cp", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("[INFO] 📦 Cleaning temporary path...")
-	cmd4 := exec.Command( "rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
-	cmd4.Stdin = os.Stdin
-	cmd4.Stdout = os.Stdout
 
-	err = cmd4.Run()
+	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /usr/local/lib")
+	cmd = exec.Command( "cp", "/tmp/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /opt/")
+	cmd = exec.Command( "mv", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/sonar-scanner/")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//fmt.Println("[INFO] 📦 Cleaning temporary path...")
+	//cmd = exec.Command( "rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
+	//cmd.Stdin = os.Stdin
+	//cmd.Stdout = os.Stdout
+	//err = cmd.Run()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	fmt.Println("[INFO] 📦 Creating symlink for java...")
+	//ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
+	cmd = exec.Command( "ln", "-s", "/usr/bin/java", "/opt/sonar-scanner/jre/bin/")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}

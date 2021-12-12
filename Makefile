@@ -1,7 +1,7 @@
 PROJECT_NAME=piktoctl
 
 # Go
-.PHYONY: run build test test_cover get docs clean
+.PHYONY: run build test test_cover get docs clean remote_copy
 run:
 	go run ./main.go
 
@@ -40,4 +40,5 @@ status:
 scan:
 	go run ./main.go sonar --scan -o "soyuntest" -p "test1,test2"
 
-
+remote_copy:
+	scp -P 2222 ./bin/piktoctl vagrant@127.0.0.1:.
