@@ -40,13 +40,13 @@ var sonarCmd = &cobra.Command{
 You will be able to configure a SonarQube with docker for local development.
 Start the container.
 Scan projects.`,
-	PreRunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			cmd.Usage()
-			os.Exit(0)
-		}
-		return nil
-	},
+	//PreRunE: func(cmd *cobra.Command, args []string) error {
+	//	if len(args) == 0 {
+	//		cmd.Usage()
+	//		os.Exit(0)
+	//	}
+	//	return nil
+	//},
 	Run: func(cmd *cobra.Command, args []string) {
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
@@ -115,7 +115,7 @@ func init() {
 	sonarCmd.PersistentFlags().BoolP("show", "", true, "Show all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 
-	sonarCmd.PersistentFlags().BoolP("install", "i", true, "Install all requirements needed")
+	sonarCmd.PersistentFlags().BoolP("install", "i", true, "[*] TODO: Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
 
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
@@ -157,7 +157,7 @@ func status() {
 	}
 }
 
-// scan projects in sonar
+// scan check every project and scan it on sonar
 func scan() {
 	fmt.Println("[INFO] 🔭 Scanning projects...")
 
@@ -215,7 +215,9 @@ func scan() {
 -Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx" \
 -Dsonar.login=`+token
 
+		fmt.Println("[INFO] ---------------")
 		fmt.Println("command: ", command)
+		fmt.Println("[INFO] ---------------")
 
 		cmd := exec.Command("bash", "-c", command)
 
@@ -247,6 +249,7 @@ func run() {
 		panic(err)
 	}
 
+	// Grant enough time to allow the service start
 	fmt.Println("[INFO] 🚢 SonarQube is starting, wait some seconds...")
 	time.Sleep(1 * time.Second)
 	fmt.Println("[INFO] 🕐")
