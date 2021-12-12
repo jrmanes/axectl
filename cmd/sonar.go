@@ -153,6 +153,16 @@ func install() {
 func installSQLinux()  {
 	packages := []string{"docker", "docker-compose", "wget", "unzip"}
 
+	fmt.Println("[INFO] 📦 Update package list... ")
+	cmd := exec.Command( "sudo", "apt", "update")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for _, p := range packages {
 		fmt.Println("[INFO] 📦 Installing package: ", p)
 
