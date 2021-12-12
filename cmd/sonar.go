@@ -18,7 +18,6 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -41,18 +40,14 @@ var sonarCmd = &cobra.Command{
 You will be able to configure a SonarQube with docker for local development.
 Start the container.
 Scan projects.`,
+// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-
-		flag.Parse()
-		tail := flag.Args()
-		fmt.Printf("Tail: %+q\n", tail)
-		//if len(args) == 0 {
-		//	cmd.Usage()
-		//	os.Exit(0)
-		//}
-		//return nil
+		if len(args) < 1 {
+			cmd.Usage()
+			os.Exit(0)
+		}
+		return nil
 	},
-
 	Run: func(cmd *cobra.Command, args []string) {
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
@@ -61,13 +56,13 @@ Scan projects.`,
 		if cmd.Flags().Changed("user") {
 			user, _ = cmd.Flags().GetString("user")
 			userData := strings.Split(user, ":")
-			fmt.Println("New user config:", user)
-			fmt.Println("New user data:", userData)
+			fmt.Println("[INFO] New user config:", user)
+			fmt.Println("[INFO] New user data:", userData)
 
 			sonarUser             = userData[0]
 			sonarPass             = userData[1]
 
-			fmt.Println("New user config:", sonarUser, sonarPass)
+			fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
 		}
 
 		if cmd.Flags().Changed("show") {
