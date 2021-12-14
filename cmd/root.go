@@ -80,7 +80,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.piktocºtl.yaml)")
-	rootCmd.PersistentFlags().StringP("sonar", "s", "sonar", "SonarQube scanner")
+	//rootCmd.PersistentFlags().StringP("sonar", "s", "sonar", "SonarQube scanner")
 	rootCmd.PersistentFlags().StringP("author", "a", "Jose Ramon Mañes", "main developer of piktoctl")
 
 	// Cobra also supports local flags, which will only run

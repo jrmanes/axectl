@@ -1,5 +1,4 @@
 PROJECT_NAME=piktoctl
-
 # Go
 .PHYONY: run build test test_cover get docs clean remote_copy
 run:
@@ -26,6 +25,7 @@ test_cover:
 	go test ./... -v -coverprofile cover.out
 	go tool cover -func ./cover.out | grep total | awk '{print $3}'
 
+
 get:
 	go get ./...
 
@@ -50,5 +50,5 @@ vagrant_rm:
 vagrant_ssh:
 	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant ssh
 
-remote_copy:
+remote_copy: build_copy
 	scp -P 2222 ./bin/piktoctl vagrant@127.0.0.1:.
