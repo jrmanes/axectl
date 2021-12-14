@@ -138,6 +138,8 @@ func show() {
 	fmt.Println(`[*] Requirements to run the service:
  - Docker
  - Docker-compose
+ - Java
+ - JDK/JRE
  - Sonar-scanner: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/`)
 }
 
