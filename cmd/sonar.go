@@ -354,7 +354,9 @@ func run() {
 
 	err := cmd.Run()
 	if err != nil {
-		panic(err)
+		log.Fatal("Please, check that your current user has permissions to execute docker \n" +
+			"you can add it to the docker group executing: sudo usermod -aG docker $USER \n" +
+			"After that, please, reboot your system \n", err)
 	}
 
 	// Grant enough time to allow the service start
