@@ -45,8 +45,7 @@ Scan projects.`,
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		flag.Parse()
 		tail := flag.Args()
-		fmt.Println(len(tail))
-		if len(tail) < 1 {
+		if len(tail) <= 1 {
 			cmd.Usage()
 			os.Exit(0)
 		}
