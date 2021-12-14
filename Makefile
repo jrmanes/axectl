@@ -53,5 +53,5 @@ vagrant_ssh:
 vagrant_reload:
 	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant reload
 
-remote_copy: build_copy
+remote_deploy: build_copy
 	scp -P 2222 ./bin/piktoctl vagrant@127.0.0.1:.
