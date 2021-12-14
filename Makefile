@@ -40,5 +40,15 @@ status:
 scan:
 	go run ./main.go sonar --scan -o "soyuntest" -p "test1,test2"
 
+# Vagrant
+vagrant_up:
+	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant up
+
+vagrant_rm:
+	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant destroy --force && rm -fr .vagrant/
+
+vagrant_ssh:
+	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant ssh
+
 remote_copy:
 	scp -P 2222 ./bin/piktoctl vagrant@127.0.0.1:.
