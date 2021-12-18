@@ -288,15 +288,21 @@ func installSQLinux(debug bool) {
 	}
 	// Create symlink to java in sonar-scanner folder
 	fmt.Println("[INFO] 📦 Creating symlink for java...")
-	//ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
-	//ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
-	cmd = exec.Command("ln", "-s", "/usr/bin/java", "/opt/sonar-scanner/jre/bin/java")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	err = cmd.Run()
+	err = os.Symlink("/usr/bin/java", "/opt/sonar-scanner/jre/bin/")
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
+	//
+	////ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
+	////ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
+	//cmd = exec.Command("ln", "-s", "/usr/bin/java", "/opt/sonar-scanner/jre/bin/")
+	//cmd.Stdin = os.Stdin
+	//cmd.Stdout = os.Stdout
+	//err = cmd.Run()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 	// Copy sonar-scanner to /opt/sonar-scanner
 	fmt.Println("[INFO] 📦 Test sonar-scanner")
 	cmd = exec.Command("sonar-scanner")
