@@ -54,6 +54,7 @@ Scan projects.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		organization, _ = cmd.Flags().GetString("organization")
 		project, _ = cmd.Flags().GetString("project")
+		debug := cmd.Flags().Changed("debug")
 
 		// check if the user and password were provided
 		if cmd.Flags().Changed("user") {
@@ -71,7 +72,7 @@ Scan projects.`,
 			show()
 		}
 		if cmd.Flags().Changed("install") {
-			install()
+			install(debug)
 		}
 		if cmd.Flags().Changed("run") {
 			run()
@@ -128,6 +129,8 @@ func init() {
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
 	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
 
+	sonarCmd.PersistentFlags().BoolP("debug", "", false, "Set debug option")
+
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// sonarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -144,22 +147,24 @@ func show() {
 }
 
 // install the needed software
-func install() {
+func install(debug bool) {
 	// TODO: allow installation for MacOS & Windows
 
 	// Install Linux Requirements
-	installSQLinux()
+	installSQLinux(debug)
 }
 
 // installSQLinux Install SonarQube packages needed for Linux environments
-func installSQLinux() {
+func installSQLinux(debug bool) {
 	packages := []string{"docker", "docker-compose", "wget", "unzip", "openjdk-11-jre-headless", "default-jre", "default-jdk"}
 
 	fmt.Println("[INFO] 📦 Update package list... ")
 	cmd := exec.Command("sudo", "apt", "update")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
 
+	}
 	err := cmd.Run()
 	if err != nil {
 		log.Fatal(err)
@@ -170,8 +175,11 @@ func installSQLinux() {
 		fmt.Println("[INFO] 📦 Installing package: ", p)
 
 		cmd := exec.Command("sudo", "apt", "install", "-y", p)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
+		if debug {
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+
+		}
 		err := cmd.Run()
 		if err != nil {
 			log.Fatal(err)
@@ -180,9 +188,11 @@ func installSQLinux() {
 
 	fmt.Println("[INFO] 📦 Download package Sonar Scanner... ")
 	cmd = exec.Command("wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
 
+	}
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
@@ -196,26 +206,46 @@ func installSQLinux() {
 	}
 
 	fmt.Println("[INFO] 📦 Moving package Sonar Scanner to /usr/local/bin")
-	cmd = exec.Command("cp", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	cmd = exec.Command("cp", "/tmp/sonar-scanner-*/bin/sonar-scanner", "/usr/local/bin/")
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+	}
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /usr/local/lib")
-	cmd = exec.Command("cp", "/tmp/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	cmd = exec.Command("cp", "-R", "/tmp/sonar-scanner-*/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+	}
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("[INFO] 📦 Creating folder for store Sonar Scanner in /opt/")
+	cmd = exec.Command("mkdir", "-p", "/opt/sonar-scanner")
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+	}
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /opt/")
-	cmd = exec.Command("mv", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/sonar-scanner/")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	cmd = exec.Command("cp", "-R", "/tmp/sonar-scanner-*/", "/opt/sonar-scanner/")
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+	}
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)

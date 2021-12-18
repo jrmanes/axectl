@@ -87,3 +87,6 @@ docker_piktoctl_sonar: docker_build
 
 docker_piktoctl_sonar_install: docker_build
 	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/piktoctl sonar -i"
+
+docker_piktoctl_sonar_install_debug: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/piktoctl sonar -i --debug"
