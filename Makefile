@@ -6,6 +6,9 @@ PROJECT_NAME=piktoctl
 run:
 	go run ./main.go
 
+run_sonar:
+	go run ./main.go sonar
+
 build: clean
 	CGO_ENABLED=0 GOOS=linux go build -o ./bin/${PROJECT_NAME} ./
 
@@ -64,20 +67,23 @@ vagrant_remote_deploy: build_copy
 ######################
 # Docker
 .PHYONY: vagrant_up vagrant_rm vagrant_ssh vagrant_ssh vagrant_reload vagrant_remote_deploy
-docker_start:
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 ls /app
+docker_build: build
+	docker build -f ./infra/Dockerfile . -t ${PROJECT_NAME}:latest
 
-docker_status: build
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 ls -ltra /app/
+docker_start: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest ls /app
 
-docker_piktoctl:
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 bash -c /app/piktoctl
+docker_status: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest ls -ltra /app/
 
-docker_piktoctl_install_sudo:
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 /bin/bash -c "apt update && apt install -y sudo"
+docker_piktoctl: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest bash -c /app/piktoctl
 
-docker_piktoctl_sonar:
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 /bin/bash -c "/app/piktoctl sonar"
+docker_piktoctl_install_sudo: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "apt update && apt install -y sudo"
 
-docker_piktoctl_sonar_install:
-	docker run -t --rm -v ${PWD}/bin/:/app ubuntu:21.10 /bin/bash -c "/app/piktoctl sonar -i"
+docker_piktoctl_sonar: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/piktoctl sonar"
+
+docker_piktoctl_sonar_install: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/piktoctl sonar -i"

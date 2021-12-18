@@ -41,7 +41,7 @@ var sonarCmd = &cobra.Command{
 You will be able to configure a SonarQube with docker for local development.
 Start the container.
 Scan projects.`,
-// Validate if there is any flag added, if not, we send the user to Usage func
+	// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		flag.Parse()
 		tail := flag.Args()
@@ -62,8 +62,8 @@ Scan projects.`,
 			fmt.Println("[INFO] New user config:", user)
 			fmt.Println("[INFO] New user data:", userData)
 
-			sonarUser             = userData[0]
-			sonarPass             = userData[1]
+			sonarUser = userData[0]
+			sonarPass = userData[1]
 
 			fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
 		}
@@ -98,12 +98,12 @@ Scan projects.`,
 }
 
 var (
-	filePath              = "/tmp/"
-	fileName              = "docker-compose.piktochart-sonarqube"
-	sonarUser             = "admin"
-	sonarPass             = "admin123."
+	filePath                    = "/tmp/"
+	fileName                    = "docker-compose.piktochart-sonarqube"
+	sonarUser                   = "admin"
+	sonarPass                   = "admin123."
 	project, organization, user string
-	tokensFolder          = "/.piktoctl/sonar/tokens/"
+	tokensFolder                = "/.piktoctl/sonar/tokens/"
 )
 
 func init() {
@@ -152,11 +152,11 @@ func install() {
 }
 
 // installSQLinux Install SonarQube packages needed for Linux environments
-func installSQLinux()  {
+func installSQLinux() {
 	packages := []string{"docker", "docker-compose", "wget", "unzip", "openjdk-11-jre-headless", "default-jre", "default-jdk"}
 
 	fmt.Println("[INFO] 📦 Update package list... ")
-	cmd := exec.Command( "sudo", "apt", "update")
+	cmd := exec.Command("sudo", "apt", "update")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
@@ -169,7 +169,7 @@ func installSQLinux()  {
 	for _, p := range packages {
 		fmt.Println("[INFO] 📦 Installing package: ", p)
 
-		cmd := exec.Command( "sudo", "apt", "install", "-y", p)
+		cmd := exec.Command("sudo", "apt", "install", "-y", p)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		err := cmd.Run()
@@ -179,7 +179,7 @@ func installSQLinux()  {
 	}
 
 	fmt.Println("[INFO] 📦 Download package Sonar Scanner... ")
-	cmd = exec.Command( "wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
+	cmd = exec.Command("wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
@@ -189,14 +189,14 @@ func installSQLinux()  {
 	}
 
 	fmt.Println("[INFO] 📦 Unzip package Sonar Scanner... ")
-	cmd = exec.Command( "unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
+	cmd = exec.Command("unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
 	err = cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
 
 	fmt.Println("[INFO] 📦 Moving package Sonar Scanner to /usr/local/bin")
-	cmd = exec.Command( "cp", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
+	cmd = exec.Command("cp", "/tmp/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err = cmd.Run()
@@ -205,7 +205,7 @@ func installSQLinux()  {
 	}
 
 	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /usr/local/lib")
-	cmd = exec.Command( "cp", "/tmp/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
+	cmd = exec.Command("cp", "/tmp/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err = cmd.Run()
@@ -213,7 +213,7 @@ func installSQLinux()  {
 		log.Fatal(err)
 	}
 	fmt.Println("[INFO] 📦 Moving library Sonar Scanner to /opt/")
-	cmd = exec.Command( "mv", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/sonar-scanner/")
+	cmd = exec.Command("mv", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/sonar-scanner/")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err = cmd.Run()
@@ -229,16 +229,17 @@ func installSQLinux()  {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
-
-	fmt.Println("[INFO] 📦 Creating symlink for java...")
-	//ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
-	cmd = exec.Command( "ln", "-s", "/usr/bin/java", "/opt/sonar-scanner/jre/bin/")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	//
+	//fmt.Println("[INFO] 📦 Creating symlink for java...")
+	////ln -s /usr/bin/java /opt/sonar-scanner/jre/bin/java
+	//cmd = exec.Command("ls", "-ltra", "/opt/sonar-scanner/")
+	////cmd = exec.Command( "ln", "-s", "/usr/bin/java", "/opt/sonar-scanner/jre/bin/")
+	//cmd.Stdin = os.Stdin
+	//cmd.Stdout = os.Stdout
+	//err = cmd.Run()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 }
 
 // status check the status of the containers
@@ -321,12 +322,12 @@ func SonarScanner(p, token string) error {
 -Dsonar.exclusions="**/node_modules/**" \
 -Dsonar.inclusions="**" \
 -Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx" \
--Dsonar.login=`+token
+-Dsonar.login=` + token
 
 	fmt.Println("[INFO] ---------------")
 	fmt.Println("command: ", command)
 	fmt.Println("[INFO] ---------------")
-//
+	//
 	cmd := exec.Command("bash", "-c", command)
 
 	cmd.Stdin = os.Stdin
@@ -354,8 +355,8 @@ func run() {
 
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal("Please, check that your current user has permissions to execute docker \n" +
-			"you can add it to the docker group executing: sudo usermod -aG docker $USER \n" +
+		log.Fatal("Please, check that your current user has permissions to execute docker \n"+
+			"you can add it to the docker group executing: sudo usermod -aG docker $USER \n"+
 			"After that, please, reboot your system \n", err)
 	}
 
