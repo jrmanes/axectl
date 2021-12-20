@@ -27,6 +27,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -415,6 +416,7 @@ func SonarScanner(p, token string) error {
 
 // run configure and initialize the containers
 func run() {
+	fmt.Println("[INFO] 🚢 We are starting the setup process... this can take some seconds...")
 	configureSystem()
 
 	dockerComposeFile := dockerComposeFile()
@@ -489,19 +491,24 @@ func stop() {
 
 // configureSystem set the needed path to the sysctl
 func configureSystem() {
-	fmt.Println("[INFO] Starting the containers, it can take a while...")
-	fmt.Println("[INFO] 🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
-	fmt.Println("[INFO] 🔓 We need to run as ROOT...")
+	o := detectOS()
+	if o == "linux" {
 
-	cmd := exec.Command("sudo", "sysctl", "-w", "vm.max_map_count=262144")
+		fmt.Println("[INFO] Starting the containers, it can take a while...")
+		fmt.Println("[INFO] 🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
+		fmt.Println("[INFO] 🔓 We need to run as ROOT...")
 
-	cmd.Stdin = os.Stdin
-	//cmd.Stdout = os.Stdout
+		cmd := exec.Command("sudo", "sysctl", "-w", "vm.max_map_count=262144")
 
-	err := cmd.Run()
-	if err != nil {
-		panic(err)
+		cmd.Stdin = os.Stdin
+		//cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			panic(err)
+		}
 	}
+
 }
 
 // dockerComposeFile returns all the data inside the docker-compose.yml file
@@ -510,6 +517,7 @@ func dockerComposeFile() string {
 version: "3"
 services:
   sonarqube:
+    platform: linux/x86_64
     image: sonarqube:9.2-community
     expose:
       - 9000
@@ -522,6 +530,7 @@ services:
       - sonar.jdbc.password=sonar
       - sonar.jdbc.url=jdbc:postgresql://psql:5432/sonar
   psql:
+    platform: linux/x86_64
     image: postgres:9.5
     networks:
       - sonar
@@ -707,4 +716,17 @@ func GetTokenInFile(tokenName string) (string, error) {
 func commandExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
+}
+
+// detectOS check the current OS where the tool is being executed
+func detectOS() string {
+	switch os := runtime.GOOS; os {
+	case "darwin":
+		return "darwin"
+	case "linux":
+		return "linux"
+	default:
+		return "linux"
+	}
+	return ""
 }
