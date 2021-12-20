@@ -75,18 +75,15 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.piktocºtl.yaml)")
-	//rootCmd.PersistentFlags().StringP("sonar", "s", "sonar", "SonarQube scanner")
 	rootCmd.PersistentFlags().StringP("author", "a", "Jose Ramon Mañes", "main developer of piktoctl")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 
 	viper.SetDefault("author", "Jose Ramon Mañes")
 }
