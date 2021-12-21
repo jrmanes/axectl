@@ -212,11 +212,12 @@ func installSQLinux(debug bool) {
 
 	// Extract the package to /tmp
 	fmt.Println("[INFO] 📦 Unzip package Sonar Scanner... ")
-	cmd = exec.Command("unzip", "/tmp/sonar-scanner.zip", "-d", "/opt/")
+	cmd = exec.Command("unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
 	err = cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
+
 	// Move sonar-scanner to /usr/local/bin
 	fmt.Println("[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin")
 	cmd = exec.Command("cp", "/opt/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")

@@ -5,7 +5,5 @@ HOST=${1:-$DEF_HOST}
 DEF_USER="joseramon"
 USER=${2:-$DEF_USER}
 
-cd ../
 make build
 scp ./bin/m1/linux/piktoctl ${USER}@${HOST}:/home/${USER}/
-cd ./infra/
