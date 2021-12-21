@@ -12,7 +12,8 @@ run_sonar:
 build: clean
 	mkdir -p ./bin/ ./bin/m1
 	CGO_ENABLED=0 GOOS=linux go build -o ./bin/${PROJECT_NAME} ./
-	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./bin/m1/${PROJECT_NAME} ./
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ./bin/m1/linux/${PROJECT_NAME} ./
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o ./bin/m1/mac/${PROJECT_NAME} ./
 
 build_copy:
 	rm ./bin/${PROJECT_NAME} || true
