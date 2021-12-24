@@ -504,7 +504,6 @@ func dockerComposeFile() string {
 version: "3"
 services:
   sonarqube:
-    platform: linux/x86_64
     image: sonarqube:9.2-community
     expose:
       - 9000
@@ -517,7 +516,6 @@ services:
       - sonar.jdbc.password=sonar
       - sonar.jdbc.url=jdbc:postgresql://psql:5432/sonar
   psql:
-    platform: linux/x86_64
     image: postgres:9.5
     networks:
       - sonar
