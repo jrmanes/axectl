@@ -241,6 +241,14 @@ func installSQLinux(debug bool) {
 		message: "[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib",
 		command: "sudo",
 		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
+	}, Command{
+		message: "[INFO] 📦 Export JAVA_HOME vars",
+		command: "export",
+		args:    []string{"JAVA_HOME=/usr/lib/jvm/java-11-openjdk"},
+	}, Command{
+		message: "[INFO] 📦 Export PATH vars",
+		command: "export",
+		args:    []string{"PATH=$JAVA_HOME/bin:${PATH}"},
 	},
 	}
 
