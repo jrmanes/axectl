@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -69,9 +70,9 @@ Scan projects.`,
 
 		// check if the user and password were provided
 		if cmd.Flags().Changed("user") {
-			user, _ = cmd.Flags().GetString("user")
-			userData := strings.Split(user, ":")
-			fmt.Println("[INFO] New user config:", user)
+			u, _ = cmd.Flags().GetString("user")
+			userData := strings.Split(u, ":")
+			fmt.Println("[INFO] New user config:", u)
 			fmt.Println("[INFO] New user data:", userData)
 
 			sonarUser = userData[0]
@@ -110,12 +111,12 @@ Scan projects.`,
 }
 
 var (
-	filePath                    = "/tmp/"
-	fileName                    = "docker-compose.piktochart-sonarqube"
-	sonarUser                   = "admin"
-	sonarPass                   = "admin123."
-	project, organization, user string
-	tokensFolder                = "/.piktoctl/sonar/tokens/"
+	filePath                 = "/tmp/"
+	fileName                 = "docker-compose.piktochart-sonarqube"
+	sonarUser                = "admin"
+	sonarPass                = "admin123."
+	project, organization, u string
+	tokensFolder             = "/.piktoctl/sonar/tokens/"
 )
 
 func init() {
@@ -206,6 +207,14 @@ func installSQLinux(debug bool) {
 			log.Fatal(err)
 		}
 	}
+	fmt.Println(user.Current()) //return current username
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Username: %s\n", user)
+	home := string(user.HomeDir)
 
 	// lco list of commands to execute
 	commands := Commands{Command{
@@ -217,29 +226,21 @@ func installSQLinux(debug bool) {
 		command: "unzip",
 		args:    []string{"-o", "/tmp/sonar-scanner.zip", "-d", "/tmp/"},
 	}, Command{
-		message: "[INFO] 📦 Copy package Sonar Scanner to /opt",
-		command: "sudo",
-		args:    []string{"cp", "-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/"},
-	}, Command{
-		message: "[INFO] 📦 Change owner to Sonar Scanner in /opt",
-		command: "sudo",
-		args:    []string{"chmod", "-R", "776", "/opt/sonar-scanner-4.6.2.2472-linux/"},
+		message: "[INFO] 📦 Copy package Sonar Scanner to ~/",
+		command: "cp",
+		args:    []string{"-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", home + "/"},
 	}, Command{
 		message: "[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin",
 		command: "cp",
-		args:    []string{"/opt/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
+		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
 	}, Command{
 		message: "[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib",
 		command: "cp",
-		args:    []string{"-R", "/opt/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
+		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
 	}, Command{
 		message: "[INFO] 📦 Check libraries java ",
 		command: "mv",
-		args:    []string{"/opt/sonar-scanner-4.6.2.2472-linux/bin", "/opt/sonar-scanner"},
-	}, Command{
-		message: "[INFO] 📦 Grant permissions to java symlink for java...",
-		command: "chmod",
-		args:    []string{"777", "/opt/sonar-scanner/jre/bin/java"},
+		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/bin", "~/sonar-scanner"},
 	},
 	}
 
