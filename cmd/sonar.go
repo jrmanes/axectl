@@ -265,18 +265,6 @@ func linuxSystem(debug bool) {
 	fmt.Println("[INFO] 📦 All packages have been installed successfully!")
 	fmt.Println("[INFO] 📦 Please restart your computer to execute: sonar-scanner")
 
-	//fmt.Println("[INFO] 📦 Source file...")
-	//cmd = exec.Command("bash", "-c", "source", "/etc/profile.d/sonar-scanner.sh")
-	//if debug {
-	//	cmd.Stdin = os.Stdin
-	//	cmd.Stdout = os.Stdout
-	//}
-	//err = cmd.Run()
-	//if err != nil {
-	//	fmt.Println(err)
-	//	os.Exit(1)
-	//}
-
 	fmt.Println("[INFO] 📦 Cleaning temporary path...")
 	cmd := exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
 	if debug {
@@ -318,6 +306,7 @@ func scan() {
 			log.Fatal(err)
 		}
 		path := string(out)
+
 		strings.Replace(path, `\n`, "\n", -1)
 
 		// get token value if exists
