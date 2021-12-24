@@ -230,6 +230,10 @@ func installSQLinux(debug bool) {
 		command: "cp",
 		args:    []string{"-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", home + "/"},
 	}, Command{
+		message: "[INFO] 📦 Hide folder package Sonar Scanner in: " + home,
+		command: "mv",
+		args:    []string{home + "/sonar-scanner-4.6.2.2472-linux/", home + "/.sonar-scanner-4.6.2.2472-linux"},
+	}, Command{
 		message: "[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin",
 		command: "cp",
 		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
