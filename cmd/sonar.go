@@ -207,13 +207,12 @@ func installSQLinux(debug bool) {
 			log.Fatal(err)
 		}
 	}
-	fmt.Println(user.Current()) //return current username
+
+	// get current user
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("Username: %s\n", user)
 	home := string(user.HomeDir)
 
 	// lco list of commands to execute
@@ -242,13 +241,13 @@ func installSQLinux(debug bool) {
 		command: "sudo",
 		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
 	}, Command{
-		message: "[INFO] 📦 Export JAVA_HOME vars",
-		command: "export",
-		args:    []string{"JAVA_HOME=/usr/lib/jvm/java-11-openjdk"},
+		message: "[INFO] 📦 Remove java from sonar-scanner",
+		command: "rm",
+		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
 	}, Command{
-		message: "[INFO] 📦 Export PATH vars",
-		command: "export",
-		args:    []string{"PATH=$JAVA_HOME/bin:${PATH}"},
+		message: "[INFO] 📦 Copy java from system",
+		command: "ln",
+		args:    []string{"-s", "/usr/bin/java", home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
 	},
 	}
 
@@ -265,6 +264,8 @@ func installSQLinux(debug bool) {
 			log.Fatal(err)
 		}
 	}
+
+	os.Setenv("JAVA_HOME", "/usr/lib/jvm/java-11-openjdk")
 
 	fmt.Println("[INFO] 📦 Create export path file")
 	createFileWithContent("/etc/profile.d/sonar-scanner.sh", "#/bin/bash\nexport PATH=$PATH:/opt/sonar-scanner/bin")
@@ -366,7 +367,14 @@ func SonarScanner(p, token string) error {
 		log.Fatal(exists)
 	}
 
-	command := `sonar-scanner  \
+	// get current user
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	home := string(user.HomeDir)
+
+	command := home + "/.sonar-scanner-4.6.2.2472-linux/bin/" + `sonar-scanner  \
 -Dsonar.host.url=http://localhost:9000 \
 -Dsonar.projectKey=` + p + ` \
 -Dsonar.sonar.projectName=` + p + ` \
@@ -385,7 +393,7 @@ func SonarScanner(p, token string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
