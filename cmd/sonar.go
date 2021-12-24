@@ -278,9 +278,11 @@ func linuxSystem(debug bool) {
 	//}
 
 	fmt.Println("[INFO] 📦 Cleaning temporary path...")
-	cmd = exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
+	cmd := exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
+	if debug {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+	}
 	err = cmd.Run()
 	if err != nil {
 		log.Fatal(err)
