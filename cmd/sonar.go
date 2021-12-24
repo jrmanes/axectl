@@ -80,9 +80,6 @@ Scan projects.`,
 
 			fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
 		}
-		if cmd.Flags().Changed("show") {
-			show()
-		}
 		if cmd.Flags().Changed("install") {
 			install(debug)
 		}
@@ -128,7 +125,6 @@ func init() {
 	// sonarCmd.PersistentFlags().String("foo", "", "A help for foo")
 	// sonarCmd.Flags().String("", "", "A help for foo")
 
-	sonarCmd.PersistentFlags().BoolP("show", "", true, "Show all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 
 	sonarCmd.PersistentFlags().BoolP("install", "i", true, "[*] TODO: Install all requirements needed")
@@ -146,16 +142,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// sonarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-// show requirement data
-func show() {
-	fmt.Println(`[*] Requirements to run the service:
- - Docker
- - Docker-compose
- - Java
- - JDK/JRE
- - Sonar-scanner: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/`)
 }
 
 // install the needed software
