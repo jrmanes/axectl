@@ -149,11 +149,11 @@ func install(debug bool) {
 	// TODO: allow installation for MacOS & Windows
 
 	// Install Linux Requirements
-	installSQLinux(debug)
+	linuxPkg(debug)
 }
 
-// installSQLinux Install SonarQube packages needed for Linux environments
-func installSQLinux(debug bool) {
+// linuxPkg Install needed SonarQube packages for Linux environments
+func linuxPkg(debug bool) {
 	// create a list with all the packages needed
 	packages := []string{
 		"docker",
@@ -194,6 +194,12 @@ func installSQLinux(debug bool) {
 		}
 	}
 
+	// Configure system
+	linuxSystem(debug)
+}
+
+// linuxSystem Configure system to execute SonarQube in Linux
+func linuxSystem(debug bool) {
 	// get current user
 	user, err := user.Current()
 	if err != nil {
