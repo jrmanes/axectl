@@ -235,16 +235,12 @@ func installSQLinux(debug bool) {
 		args:    []string{home + "/sonar-scanner-4.6.2.2472-linux/", home + "/.sonar-scanner-4.6.2.2472-linux"},
 	}, Command{
 		message: "[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin",
-		command: "cp",
-		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
+		command: "sudo",
+		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
 	}, Command{
 		message: "[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib",
-		command: "cp",
-		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
-	}, Command{
-		message: "[INFO] 📦 Check libraries java ",
-		command: "mv",
-		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/bin", "~/sonar-scanner"},
+		command: "sudo",
+		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
 	},
 	}
 
