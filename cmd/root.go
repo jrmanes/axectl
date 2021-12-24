@@ -58,12 +58,8 @@ llllllllllllllllllllllllllllllllllllllllllllllllll
 llllllllllllllllllllllllllllllllllllllllllllllllll
 llllllllllllllllllllllllllllllllllllllllllllllllll
 ---------------
-piktoctl is a tool generated with the purpose of create various 
-tools to the developers.
+Piktoctl is a set of tools for the piktodevs.
 ---------------`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
