@@ -34,6 +34,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Command struct which contains an info message, command to execute and an array of arguments
+type Command struct {
+	message string
+	command string
+	args    []string
+}
+
+// Commands list of commands
+type Commands []Command
+
 // sonarCmd represents the sonar command
 var sonarCmd = &cobra.Command{
 	Use:   "sonar",
@@ -197,94 +207,54 @@ func installSQLinux(debug bool) {
 		}
 	}
 
-	// Download the sonar-scanenr
-	fmt.Println("[INFO] 📦 Download package Sonar Scanner... ")
-	cmd = exec.Command("wget", "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip")
-	if debug {
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-
-	}
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Extract the package to /tmp
-	fmt.Println("[INFO] 📦 Unzip package Sonar Scanner... ")
-	cmd = exec.Command("unzip", "/tmp/sonar-scanner.zip", "-d", "/tmp/")
-	err = cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-
-	// Move sonar-scanner to /usr/local/bin
-	fmt.Println("[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin")
-	cmd = exec.Command("cp", "/opt/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/")
-	if debug {
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-
-	}
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Move sonar-scanner to /usr/local/lib
-	fmt.Println("[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib")
-	cmd = exec.Command("cp", "-R", "/opt/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/")
-	if debug {
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-
-	}
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	//// Create folder /opt/sonar-scanner
-	//fmt.Println("[INFO] 📦 Creating folder for store Sonar Scanner in /opt/")
-	//cmd = exec.Command("mkdir", "-p", "/opt/sonar-scanner")
-	//if debug {
-	//	cmd.Stdin = os.Stdin
-	//	cmd.Stdout = os.Stdout
-	//
-	//}
-	//err = cmd.Run()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	// Copy sonar-scanner to /opt/sonar-scanner
-	//fmt.Println("[INFO] 📦 Copy library Sonar Scanner to /opt/")
-	//cmd = exec.Command("cp", "-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/")
-	//if debug {
-	//	cmd.Stdin = os.Stdin
-	//	cmd.Stdout = os.Stdout
-	//
-	//}
-	//err = cmd.Run()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
-	fmt.Println("[INFO] 📦 Check libraries java ")
-	cmd = exec.Command("mv", "/opt/sonar-scanner-4.6.2.2472-linux/bin", "/opt/sonar-scanner")
-	if debug {
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-
-	}
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
+	// lco list of commands to execute
+	commands := Commands{Command{
+		message: "[INFO] 📦 Download package Sonar Scanner... ",
+		command: "wget",
+		args:    []string{"https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip"},
+	}, Command{
+		message: "[INFO] 📦 Unzip package Sonar Scanner... ",
+		command: "unzip",
+		args:    []string{"-o", "/tmp/sonar-scanner.zip", "-d", "/tmp/"},
+	}, Command{
+		message: "[INFO] 📦 Copy package Sonar Scanner to /opt",
+		command: "sudo",
+		args:    []string{"cp", "-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/opt/"},
+	}, Command{
+		message: "[INFO] 📦 Change owner to Sonar Scanner in /opt",
+		command: "sudo",
+		args:    []string{"chmod", "-R", "776", "/opt/sonar-scanner-4.6.2.2472-linux/"},
+	}, Command{
+		message: "[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin",
+		command: "cp",
+		args:    []string{"/opt/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
+	}, Command{
+		message: "[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib",
+		command: "cp",
+		args:    []string{"-R", "/opt/sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
+	}, Command{
+		message: "[INFO] 📦 Check libraries java ",
+		command: "mv",
+		args:    []string{"/opt/sonar-scanner-4.6.2.2472-linux/bin", "/opt/sonar-scanner"},
+	}, Command{
+		message: "[INFO] 📦 Grant permissions to java symlink for java...",
+		command: "chmod",
+		args:    []string{"777", "/opt/sonar-scanner/jre/bin/java"},
+	},
 	}
 
-	// Create symlink to java in sonar-scanner folder
-	fmt.Println("[INFO] 📦 Grant permissions to java symlink for java...")
-	cmd = exec.Command("chmod", "777", "/opt/sonar-scanner/jre/bin/java")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	// loop inside all the commands to execute
+	for _, c := range commands {
+		fmt.Println(c.message)
+		c := exec.Command(c.command, c.args...)
+		if debug {
+			c.Stdin = os.Stdin
+			c.Stdout = os.Stdout
+		}
+		err = c.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	fmt.Println("[INFO] 📦 Create export path file")
@@ -313,7 +283,6 @@ func installSQLinux(debug bool) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 // status check the status of the containers
@@ -554,7 +523,7 @@ volumes:
 }
 
 // createFileWithContent generates the docker file in the path specified
-func createFileWithContent(path string, content string) string {
+func createFileWithContent(path, content string) string {
 	// create file
 	f, err := os.Create(path)
 	if err != nil {
