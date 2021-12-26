@@ -368,7 +368,7 @@ func SonarScanner(p, token string) error {
 -Dsonar.sources=./` + p + ` \
 -Dsonar.exclusions="**/node_modules/**" \
 -Dsonar.inclusions="**" \
--Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx" \
+-Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx,**/__tests__/**" \
 -Dsonar.login=` + token
 
 	fmt.Println("[INFO] ---------------")
