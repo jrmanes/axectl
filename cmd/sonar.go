@@ -648,23 +648,6 @@ func createProjectToken() {
 
 }
 
-func ShowManualScan() {
-	fmt.Println("[INFO]: 📊 You can execute --scan option or execute manually with: ")
-	fmt.Println(`sonar-scanner \
-  -Dsonar.projectKey=<YOUR-PROJECT-KEY> \
-  -Dsonar.sources=. \
-  -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=<YOUR-TOKEN>`)
-
-	fmt.Println("[INFO]: 🐋 Or with Docker:")
-	fmt.Println(`docker run \
-   --rm \
-   -e SONAR_HOST_URL="http://localhost:9000" \
-   -e SONAR_LOGIN=<YOUR-TOKEN> \
-   -v "$(pwd):/usr/src" \
-   sonarsource/sonar-scanner-cli`)
-}
-
 // GetTokenInFile check the content inside the file and return it
 func GetTokenInFile(tokenName string) (string, error) {
 	// Get current user directory
