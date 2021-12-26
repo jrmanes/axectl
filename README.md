@@ -4,6 +4,17 @@ Piktoctl is a set of tools for developers, we have different options for the too
 
 ---
 
+## Installation Steps
+
+- Copy to path 
+```bash
+sudo cp ./piktoctl /usr/bin/
+```
+- Install requirements `piktoctl sonar -i`
+- Reboot system `sudo reboot now`
+
+---
+
 ## Sonar
 
 Piktoctl has the command `sonar` which allows you to have a **SonarQube** in your local dev env.
@@ -46,7 +57,7 @@ You can use for instance the path:
 
 Execute the command:
 ```bash
-sudo cp ./piktoctl /usr/bin
+sudo cp ./piktoctl /usr/bin/
 ```
 
 ---

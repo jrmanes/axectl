@@ -204,7 +204,7 @@ func linuxSystem(debug bool) {
 	if err != nil {
 		panic(err)
 	}
-	home := string(user.HomeDir)
+	home := user.HomeDir
 
 	// lco list of commands to execute
 	commands := Commands{Command{
@@ -244,9 +244,9 @@ func linuxSystem(debug bool) {
 		command: "ln",
 		args:    []string{"-s", "/usr/bin/java", home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
 	}, Command{
-		message: "[INFO] 📦 Add docker group to the user: " + string(user.Name) + "",
+		message: "[INFO] 📦 Add docker group to the user: " + user.Username + "",
 		command: "sudo",
-		args:    []string{"usermod", "-aG", "docker", string(user.Name)},
+		args:    []string{"usermod", "-aG", "docker", user.Username},
 	},
 	}
 
