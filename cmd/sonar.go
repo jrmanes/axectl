@@ -125,8 +125,6 @@ func init() {
 	// sonarCmd.PersistentFlags().String("foo", "", "A help for foo")
 	// sonarCmd.Flags().String("", "", "A help for foo")
 
-	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
-
 	sonarCmd.PersistentFlags().BoolP("install", "i", true, "[*] TODO: Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
 
@@ -135,6 +133,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("project", "p", "", "You can add one project name or multiple separated by comas.")
 	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Start running the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
+	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
 
 	sonarCmd.PersistentFlags().BoolP("debug", "", false, "Set debug option")
@@ -221,6 +220,10 @@ func linuxSystem(debug bool) {
 		command: "cp",
 		args:    []string{"-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", home + "/"},
 	}, Command{
+		message: "[INFO] 📦 Clean folder if exists in: " + home,
+		command: "rm",
+		args:    []string{"-rf", home + "/.sonar-scanner-4.6.2.2472-linux/"},
+	}, Command{
 		message: "[INFO] 📦 Hide folder package Sonar Scanner in: " + home,
 		command: "mv",
 		args:    []string{home + "/sonar-scanner-4.6.2.2472-linux/", home + "/.sonar-scanner-4.6.2.2472-linux"},
@@ -240,6 +243,10 @@ func linuxSystem(debug bool) {
 		message: "[INFO] 📦 Copy java from system",
 		command: "ln",
 		args:    []string{"-s", "/usr/bin/java", home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
+	}, Command{
+		message: "[INFO] 📦 Add docker group to the user: " + string(user.Name) + "",
+		command: "sudo",
+		args:    []string{"usermod", "-aG", "docker", string(user.Name)},
 	},
 	}
 
@@ -259,12 +266,6 @@ func linuxSystem(debug bool) {
 
 	os.Setenv("JAVA_HOME", "/usr/lib/jvm/java-11-openjdk")
 
-	fmt.Println("[INFO] 📦 Create export path file")
-	createFileWithContent("/etc/profile.d/sonar-scanner.sh", "#/bin/bash\nexport PATH=$PATH:/opt/sonar-scanner/bin")
-
-	fmt.Println("[INFO] 📦 All packages have been installed successfully!")
-	fmt.Println("[INFO] 📦 Please restart your computer to execute: sonar-scanner")
-
 	fmt.Println("[INFO] 📦 Cleaning temporary path...")
 	cmd := exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
 	if debug {
@@ -275,6 +276,9 @@ func linuxSystem(debug bool) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("[INFO] ✅ All packages have been installed successfully!")
+	fmt.Println("[INFO] 🔄 Please restart your computer to execute: sonar-scanner")
 }
 
 // status check the status of the containers

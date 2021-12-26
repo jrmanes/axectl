@@ -6,4 +6,5 @@ DEF_USER="joseramon"
 USER=${2:-$DEF_USER}
 
 make build
-scp ./bin/m1/linux/piktoctl ${USER}@${HOST}:/home/${USER}/
+scp ./bin/piktoctl ${USER}@${HOST}:/home/${USER}/
+#scp ./bin/m1/linux/piktoctl ${USER}@${HOST}:/home/${USER}/
