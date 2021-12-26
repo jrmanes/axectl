@@ -15,6 +15,11 @@ There are different options for `sonar`:
 piktoctl sonar -i
 ```
 
+- Start the service, creating the projects and scan them
+```bash
+piktoctl sonar -r -c --scan -p "someProject" -o "someOrganization"
+```
+
 - Start the service
 ```bash
 piktoctl sonar -r -p "someProject" -o "someOrganization"
@@ -32,9 +37,23 @@ piktoctl sonar --status
 
 ---
 
+## Add to path
+
+You can easy execute `piktoctl` adding it to some path that you have configured in your `$PATH`.
+
+You can use for instance the path:
+`/usr/bin/`
+
+Execute the command:
+```bash
+sudo cp ./piktoctl /usr/bin
+```
+
+---
+
 ## TODO
 - [x] Install dependencies
-- [x] Execute docker-compose up
+- [x] Start all the containers
 - [x] Check containers status
 - [x] Generate project in Sonar
 - [x] Generate token for project
