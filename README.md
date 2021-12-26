@@ -10,8 +10,24 @@ Piktoctl is a set of tools for developers, we have different options for the too
 ```bash
 sudo cp ./piktoctl /usr/bin/
 ```
-- Install requirements `piktoctl sonar -i`
-- Reboot system `sudo reboot now`
+- Install requirements
+```bash
+piktoctl sonar -i
+```
+- Reboot system
+```bash
+sudo reboot now
+```
+- Start the SonarQube service
+```bash
+piktoctl sonar -r
+```
+- Access in your browser and set the admin password (follow the instruction in the tool)
+- Go to the parent folder of your project
+- Create the projects and scan them
+```bash
+piktoctl sonar -c --scan -p "piktostory" -o "Piktochart"
+```
 
 ---
 
