@@ -645,7 +645,6 @@ func createProjectToken() {
 		}
 		fmt.Println("[INFO] --------------------------------------------------------")
 	}
-
 }
 
 // GetTokenInFile check the content inside the file and return it
