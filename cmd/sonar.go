@@ -146,13 +146,19 @@ func init() {
 // install the needed software
 func install(debug bool) {
 	// TODO: allow installation for MacOS & Windows
-
+	switch os := detectOS(); os {
+	case "darwin":
+		fmt.Println("TODO: Development pending...")
+	case "linux":
+		LinuxPkg(debug)
+	default:
+		LinuxPkg(debug)
+	}
 	// Install Linux Requirements
-	linuxPkg(debug)
 }
 
-// linuxPkg Install needed SonarQube packages for Linux environments
-func linuxPkg(debug bool) {
+// LinuxPkg Install needed SonarQube packages for Linux environments
+func LinuxPkg(debug bool) {
 	// create a list with all the packages needed
 	packages := []string{
 		"docker",
