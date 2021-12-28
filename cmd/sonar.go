@@ -165,7 +165,7 @@ func install(debug bool) {
 	// TODO: allow installation for MacOS & Windows
 	switch os := detectOS(); os {
 	case "darwin":
-		fmt.Println("TODO: Development pending...")
+		fmt.Println("TODO: Install packages for MacOS, Development pending...")
 	case "linux":
 		LinuxPkg(debug)
 	default:
