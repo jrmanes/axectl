@@ -400,7 +400,7 @@ func run() {
 	configureSystem()
 
 	dockerComposeFile := dockerComposeFile()
-	fileName := createFileWithContent(filePath+fileName, dockerComposeFile)
+	fileName := CreateFileWithContent(filePath+fileName, dockerComposeFile)
 
 	cmd := exec.Command("docker-compose", "-f", filePath+fileName, "up", "-d")
 
@@ -530,8 +530,8 @@ volumes:
 	return dockerFile
 }
 
-// createFileWithContent generates the docker file in the path specified
-func createFileWithContent(path, content string) string {
+// CreateFileWithContent generates the docker file in the path specified
+func CreateFileWithContent(path, content string) string {
 	// create file
 	f, err := os.Create(path)
 	if err != nil {
@@ -640,7 +640,7 @@ func createProjectToken() {
 				}
 
 				tokenFile := filepath.Join(configHome, token.Name)
-				createFileWithContent(tokenFile, token.Token)
+				CreateFileWithContent(tokenFile, token.Token)
 			} else {
 				fmt.Println("[ERROR] Failed token creation, it's possible that the token already exists, for check it, got to:")
 				fmt.Println("[ERROR] Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
