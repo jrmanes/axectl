@@ -67,46 +67,8 @@ Configure a SonarQube with docker for local development.
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		organization, _ = cmd.Flags().GetString("organization")
-		project, _ = cmd.Flags().GetString("project")
-		debug := cmd.Flags().Changed("debug")
-
-		// check if the user and password were provided
-		if cmd.Flags().Changed("user") {
-			u, _ = cmd.Flags().GetString("user")
-			userData := strings.Split(u, ":")
-			fmt.Println("[INFO] New user config:", u)
-			fmt.Println("[INFO] New user data:", userData)
-
-			sonarUser = userData[0]
-			sonarPass = userData[1]
-
-			fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
-		}
-		if cmd.Flags().Changed("install") {
-			install(debug)
-		}
-		if cmd.Flags().Changed("run") {
-			run()
-		}
-		if cmd.Flags().Changed("organization") || cmd.Flags().Changed("project") {
-			if organization == "" || project == "" {
-				fmt.Println("[ERROR] Organization needs to be set, use parameter: -o ")
-			}
-		}
-		if cmd.Flags().Changed("create") {
-			createProject()
-			createProjectToken()
-		}
-		if cmd.Flags().Changed("scan") {
-			scan()
-		}
-		if cmd.Flags().Changed("status") {
-			status()
-		}
-		if cmd.Flags().Changed("stop") {
-			stop()
-		}
+		// Call StartSonar in order to initialize all the values
+		StartSonar(cmd, args)
 	},
 }
 
@@ -144,6 +106,58 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// sonarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+// StartSonar initialize all the subcommands and detect the arguments
+func StartSonar(cmd *cobra.Command, args []string) {
+	// organization - get the organization flag value
+	organization, _ = cmd.Flags().GetString("organization")
+	// project - get the project flag value
+	project, _ = cmd.Flags().GetString("project")
+	// debug - get the debug flag value
+	debug := cmd.Flags().Changed("debug")
+
+	// check if the user and password were provided
+	if cmd.Flags().Changed("user") {
+		u, _ = cmd.Flags().GetString("user")
+		userData := strings.Split(u, ":")
+		fmt.Println("[INFO] New user config:", u)
+		fmt.Println("[INFO] New user data:", userData)
+
+		sonarUser = userData[0]
+		sonarPass = userData[1]
+
+		fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
+	}
+	// check if the install flag has change, execute install function and send the value of the debug
+	if cmd.Flags().Changed("install") {
+		install(debug)
+	}
+	// check if the run flag has change, execute run function
+	if cmd.Flags().Changed("run") {
+		run()
+	}
+	// validates the organization and project flags values
+	if cmd.Flags().Changed("organization") || cmd.Flags().Changed("project") {
+		if organization == "" || project == "" {
+			fmt.Println("[ERROR] Organization needs to be set, use parameter: -o ")
+		}
+	}
+	// check if the create flag has change, execute create function
+	if cmd.Flags().Changed("create") {
+		createProject()
+		createProjectToken()
+	}
+	// check if the scan flag has change
+	if cmd.Flags().Changed("scan") {
+		scan()
+	}
+	if cmd.Flags().Changed("status") {
+		status()
+	}
+	if cmd.Flags().Changed("stop") {
+		stop()
+	}
 }
 
 // install the needed software
