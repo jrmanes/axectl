@@ -355,7 +355,7 @@ func SonarScanner(p, token string) error {
 	//-Dsonar.login=`+token
 
 	// chekk if command: sonar-scanner exists in path
-	exists := commandExists("sonar-scanner")
+	exists := CommandExists("sonar-scanner")
 	if !exists {
 		log.Fatal(exists)
 	}
@@ -672,8 +672,8 @@ func GetTokenInFile(tokenName string) (string, error) {
 	return token, nil
 }
 
-// commandExists verify if a command exists in path
-func commandExists(cmd string) bool {
+// CommandExists verify if a command exists in path
+func CommandExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
 }
