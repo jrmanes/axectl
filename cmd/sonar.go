@@ -50,9 +50,12 @@ var sonarCmd = &cobra.Command{
 	Use:   "sonar",
 	Short: "SonarQube command options",
 	Long: `Using the command 'sonar' 
-You will be able to configure a SonarQube with docker for local development.
-Start the container.
-Scan projects.`,
+Configure a SonarQube with docker for local development.
+- You can install all the packages needed.
+- Start/Stop the container.
+- Check the status of the container.
+- Create projects.
+- Scan projects.`,
 	// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		flag.Parse()
