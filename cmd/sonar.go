@@ -45,6 +45,14 @@ type Command struct {
 // Commands list of commands
 type Commands []Command
 
+// TokenResponse is the struct that we use for our Sonar responses
+type TokenResponse struct {
+	Login     string `json:"login"`
+	Name      string `json:"name"`
+	Token     string `json:"token"`
+	CreatedAt string `json:"createdAt"`
+}
+
 // sonarCmd represents the sonar command
 var sonarCmd = &cobra.Command{
 	Use:   "sonar",
@@ -62,14 +70,19 @@ Features:
 -----------------------------------------------------------------------------------------
 USAGE Examples:
 
+Go to the parent folder, or specify the package name separated by comas.
 There are different options for sonar:
 - Install needed packages:
 
 piktoctl sonar -i
 
-- Start the service, creating the projects and scan them
+- Start the service, creating the projects and scan them:
 
 piktoctl sonar -r -c --scan -p "someProject" -o "someOrganization"
+
+Or specify multiple packages separated by comas:
+
+piktoctl sonar -r -c --scan -p "someProject1,someProjet2,someProject3" -o "someOrganization"
 
 - Start the service
 
@@ -622,14 +635,6 @@ func createProject() {
 			log.Fatal(err)
 		}
 	}
-}
-
-// TokenResponse is the struct that we use for our Sonar responses
-type TokenResponse struct {
-	Login     string `json:"login"`
-	Name      string `json:"name"`
-	Token     string `json:"token"`
-	CreatedAt string `json:"createdAt"`
 }
 
 // createProjectToken generates the token for the project in SonarQube
