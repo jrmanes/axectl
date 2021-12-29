@@ -239,6 +239,8 @@ func LinuxPkg(debug bool) {
 		err := cmd.Run()
 		if err != nil {
 			log.Fatal(err)
+		} else {
+			fmt.Println("[INFO] ✅ ", p, " -> successfully installed!")
 		}
 	}
 
