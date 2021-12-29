@@ -49,13 +49,40 @@ type Commands []Command
 var sonarCmd = &cobra.Command{
 	Use:   "sonar",
 	Short: "SonarQube command options",
-	Long: `Using the command 'sonar' 
-Configure a SonarQube with docker for local development.
-- You can install all the packages needed.
+	Long: `Piktoctl has the command sonar which allows you to have a SonarQube in your local dev env.
+
+Features: 
+- Install all the packages needed to run SonarQube and execute scans.
+- Configure a SonarQube with docker for local development.
 - Start/Stop the container.
 - Check the status of the container.
 - Create projects.
-- Scan projects.`,
+- Scan projects.
+
+-----------------------------------------------------------------------------------------
+USAGE Examples:
+
+There are different options for sonar:
+- Install needed packages:
+
+piktoctl sonar -i
+
+- Start the service, creating the projects and scan them
+
+piktoctl sonar -r -c --scan -p "someProject" -o "someOrganization"
+
+- Start the service
+
+piktoctl sonar -r -p "someProject" -o "someOrganization"
+
+- Start the service creating the projects
+
+piktoctl sonar -r -c -p "someProject" -o "someOrganization"
+
+- Check the status of the service
+
+piktoctl sonar --status
+-----------------------------------------------------------------------------------------`,
 	// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		flag.Parse()
@@ -193,7 +220,6 @@ func LinuxPkg(debug bool) {
 	if debug {
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
-
 	}
 	err := cmd.Run()
 	if err != nil {
