@@ -68,7 +68,7 @@ Configure a SonarQube with docker for local development.
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// Call StartSonar in order to initialize all the values
-		StartSonar(cmd, args)
+		StartSonar(cmd)
 	},
 }
 
@@ -109,7 +109,7 @@ func init() {
 }
 
 // StartSonar initialize all the subcommands and detect the arguments
-func StartSonar(cmd *cobra.Command, args []string) {
+func StartSonar(cmd *cobra.Command) {
 	// organization - get the organization flag value
 	organization, _ = cmd.Flags().GetString("organization")
 	// project - get the project flag value

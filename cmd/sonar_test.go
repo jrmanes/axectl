@@ -5,8 +5,48 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
+
+	"github.com/spf13/cobra"
 )
+
+// TestCreateFileWithContent check write/read content to files
+func TestStartSonar(t *testing.T) {
+	t.Parallel()
+	// create a cobra instance
+	var sonarCmd = &cobra.Command{}
+
+	var detectOk = []struct {
+		name    string
+		command []string
+		args    []string
+	}{
+		{"check Install", []string{"install"}, []string{"install"}},
+		{"check Status", []string{"status"}, []string{"status"}},
+		{"check Run", []string{"run"}, []string{"run"}},
+		{"check Run, status, stop", []string{"run", "status", "stop"}, []string{"run", "status", "stop"}},
+		{"check Run, status, stop", []string{"test", "status", "stop"}, []string{"run", "status", "stop"}},
+	}
+
+	t.Run("Check arguments in command", func(t *testing.T) {
+		for _, tt := range detectOk {
+			// set the values from our data
+			sonarCmd.SetArgs(tt.command)
+
+			// verify if the flags provided are the same as the array expected
+			//TODO: change behavior of sonarCmd arg
+			if reflect.DeepEqual(tt.args, sonarCmd.Flags()) {
+				t.Errorf("ERROR: \n name: %s, \n command: %s, \n args: %s, \n cmd: %t",
+					tt.name,
+					tt.command,
+					tt.args[0],
+					sonarCmd.Flags().Changed(tt.command[0]),
+				)
+			}
+		}
+	})
+}
 
 // TestCreateFileWithContent check write/read content to files
 func TestCreateFileWithContent(t *testing.T) {
@@ -56,6 +96,7 @@ func TestCommandExists(t *testing.T) {
 		{"mv", true},
 		{"cp", true},
 	}
+
 	// Create data for not existent commands
 	var notExists = []struct {
 		got  string
