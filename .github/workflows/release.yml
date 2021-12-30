@@ -33,4 +33,4 @@ jobs:
           go-version: ${{ matrix.go }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} ${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
+      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
