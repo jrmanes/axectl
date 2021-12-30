@@ -6,6 +6,7 @@ on:
       - "main"
 #      - "v*"
 jobs:
+  name: Unit Tets
   test:
     strategy:
       matrix:
@@ -23,7 +24,6 @@ jobs:
         run: go test ./... -v -coverprofile cover.out
       - name: Code Coverage
         run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
-
   releases-matrix:
     name: Release Go Binary
     runs-on: ubuntu-latest
