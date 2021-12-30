@@ -46,12 +46,11 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
       - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
-      - uses: wangyoucao577/go-release-action@v1.22
+      - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
+      - uses: ncipollo/release-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          go-version: ${{ matrix.go }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          goversion: "https://dl.google.com/go/go${{ matrix.go }}.${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz"
-          project_path: "."
-          binary_name: "./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl"
-          extra_files: LICENSE README.md
+          artifacts: piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
