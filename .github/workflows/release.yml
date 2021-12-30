@@ -1,15 +1,10 @@
 ---
 name: CI
-
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     push:
       - "main"
 #      - "v*"
-# .github/workflows/release.yaml
-
 jobs:
   releases-matrix:
     name: Release Go Binary
@@ -27,6 +22,15 @@ jobs:
             goos: windows
     steps:
       - uses: actions/checkout@v2
+      - name: Unit Test
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+      - run: go test ./... -v -coverprofile cover.out
+      - run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
+
       - name: Setup go
         uses: actions/setup-go@v2
         with:
