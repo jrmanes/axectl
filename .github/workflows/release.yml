@@ -47,10 +47,10 @@ jobs:
           goarch: ${{ matrix.goarch }}
       - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
       - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
+      - name: Check files
+        uses: actions/setup-go@v2
+      - run: ls -ltra ./bin/*/*
       - uses: ncipollo/release-action@v1
         with:
-          go-version: ${{ matrix.go }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          artifacts: piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+          artifacts: piktoctl-*-*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
