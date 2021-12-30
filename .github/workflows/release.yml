@@ -2,8 +2,7 @@
 name: CI
 on:
   push:
-    push:
-      - "v*"
+    - "v*"
 jobs:
   test:
     name: Unit Tets
