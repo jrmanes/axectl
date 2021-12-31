@@ -5,56 +5,59 @@ on:
     tags:
       - "v*"
 jobs:
-  test:
-    name: Unit Tets
-    strategy:
-      matrix:
-        go-version: [1.16.x, 1.17.x]
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Unit Test
-        run: go test ./... -v -coverprofile cover.out
-      - name: Code Coverage
-        run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
-  build-matrix:
-    name: Release Go Binary
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [ '1.17.3' ]
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build app
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
-      - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
-      - name: Check files
-        uses: actions/setup-go@v2
-      - run: ls -ltra ./bin/*/*
-  release:
-    name: Release Go Binary
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: piktoctl-*-*.tar.gz
-          token: ${{ secrets.GITHUB_TOKEN }}
+  job1:
+    test:
+      name: Unit Tets
+      strategy:
+        matrix:
+          go-version: [1.16.x, 1.17.x]
+          os: [ubuntu-latest, macos-latest]
+      runs-on: ${{ matrix.os }}
+      steps:
+        - name: Install Go
+          uses: actions/setup-go@v2
+          with:
+            go-version: ${{ matrix.go-version }}
+        - name: Checkout code
+          uses: actions/checkout@v2
+        - name: Unit Test
+          run: go test ./... -v -coverprofile cover.out
+        - name: Code Coverage
+          run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
+    build-matrix:
+      name: Build Go Binary
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          go: [ '1.17.3' ]
+          # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
+          goos: [linux, windows, darwin]
+          goarch: ["386", amd64, arm64]
+          exclude:
+            - goarch: "386"
+              goos: darwin
+            - goarch: arm64
+              goos: windows
+      steps:
+        - uses: actions/checkout@v2
+        - name: Build app
+          uses: actions/setup-go@v2
+          with:
+            go-version: ${{ matrix.go }}
+            goos: ${{ matrix.goos }}
+            goarch: ${{ matrix.goarch }}
+        - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
+        - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
+        - name: Check files
+          uses: actions/setup-go@v2
+        - run: ls -ltra ./bin/*/*
+  job2:
+    needs: job1
+    release:
+      name: Release Go Binary
+      runs-on: ubuntu-latest
+      steps:
+        - uses: ncipollo/release-action@v1
+          with:
+            artifacts: piktoctl-*-*.tar.gz
+            token: ${{ secrets.GITHUB_TOKEN }}
