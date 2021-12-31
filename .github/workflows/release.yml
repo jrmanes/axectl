@@ -45,7 +45,7 @@ jobs:
           go-version: ${{ matrix.go }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          path: ./bin/
+          path: artifacts/
       - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
       - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
       - name: Check files
@@ -64,10 +64,9 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           path: ./bin/
-      - run: ls -ltra ./bin/
       - run: ls -ltra ./
       - uses: ncipollo/release-action@v1
         with:
-          path: ./bin/
+          path: artifacts/
           artifacts: piktoctl-*-*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
