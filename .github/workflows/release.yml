@@ -51,11 +51,21 @@ jobs:
       - name: Check files
         uses: actions/setup-go@v2
       - run: ls -ltra ./bin/*/*
+      - run: ls -ltra ./
   release:
     needs: build
     name: Release Go Binary
     runs-on: ubuntu-latest
     steps:
+      - name: Check artifacts
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          path: ./bin/
+      - run: ls -ltra ./bin/
+      - run: ls -ltra ./
       - uses: ncipollo/release-action@v1
         with:
           path: ./bin/
