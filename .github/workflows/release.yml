@@ -51,7 +51,6 @@ jobs:
       - name: Check files
         uses: actions/setup-go@v2
       - run: ls -ltra ./bin/*/*
-      - run: ls -ltra ./
   release:
     needs: build
     name: Release Go Binary
