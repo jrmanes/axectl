@@ -46,12 +46,14 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           path: artifacts/
+      - run: mkdir -p ./artifacts/ 
       - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
-      - run: tar -czvf piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
+      - run: tar -czvf ./artifacts/piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
       - name: Check files
         uses: actions/setup-go@v2
       - run: ls -ltra ./bin/*/*
       - run: ls -ltra ./
+      - run: ls -ltra ./artifacts/
   release:
     needs: build
     name: Release Go Binary
@@ -63,8 +65,9 @@ jobs:
           go-version: ${{ matrix.go }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          path: ./bin/
+          path: ./artifactsi/
       - run: ls -ltra ./
+      - run: ls -ltra ./artifacts/
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
