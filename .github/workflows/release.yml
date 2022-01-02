@@ -37,16 +37,8 @@ jobs:
           path: artifacts/
       - run: mkdir -p ./artifacts/ 
       - run: |
-          goos=(
-          "linux"
-          "windows"
-          "darwin"
-          )
-          arch=(
-          "386"
-          "amd64"
-          "arm64"
-          )
+          goos=( "linux" "windows" "darwin")
+          arch=( "386" "amd64" "arm64" )
           PROJECT_NAME=piktoctl
           mkdir -p ./artifacts
           for a in ${goos[@]}; do
@@ -55,7 +47,7 @@ jobs:
                   echo "Not allowed: $a $i"
             	else
             	  echo "Building: $a $i"
-             	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}./ &&\
+             	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}
             	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME} &
             	fi
               done
