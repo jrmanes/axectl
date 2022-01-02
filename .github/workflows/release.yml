@@ -37,7 +37,8 @@ jobs:
           path: artifacts/
       - run: mkdir -p ./artifacts/ 
       - run: |
-          goos=( "linux" "windows" "darwin")
+          goos=( "linux" "windows") 
+          #goos=( "linux" "windows" "darwin")
           arch=( "386" "amd64" "arm64" )
           PROJECT_NAME=piktoctl
           mkdir -p ./artifacts
@@ -48,10 +49,10 @@ jobs:
             	else
             	  echo "Building: $a $i"
              	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}
-            	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME} &
+            	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME}
             	fi
               done
-          done; wait
+          done
       - run: ls -ltra ./artifacts/
   release:
     needs: build
