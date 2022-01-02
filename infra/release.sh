@@ -17,3 +17,5 @@ for a in ${goos[@]}; do
 	done
 done; wait
 
+
+
