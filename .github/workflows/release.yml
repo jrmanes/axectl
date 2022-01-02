@@ -26,17 +26,6 @@ jobs:
   build:
     name: Build Go Binary
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [ '1.17.3' ]
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
     steps:
       - uses: actions/checkout@v2
       - name: Build app
@@ -47,12 +36,30 @@ jobs:
           goarch: ${{ matrix.goarch }}
           path: artifacts/
       - run: mkdir -p ./artifacts/ 
-      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
-      - run: tar -czvf ./artifacts/piktoctl-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl
-      - name: Check files
-        uses: actions/setup-go@v2
-      - run: ls -ltra ./bin/*/*
-      - run: ls -ltra ./
+      - run: |
+          goos=(
+          "linux"
+          "windows"
+          "darwin"
+          )
+          arch=(
+          "386"
+          "amd64"
+          "arm64"
+          )
+          PROJECT_NAME=piktoctl
+          mkdir -p ./artifacts
+          for a in ${goos[@]}; do
+              for i in ${arch[@]}; do
+                if [[ $a == "darwin" && $i == "386" ]]; then
+                  echo "Not allowed: $a $i"
+            	else
+            	  echo "Building: $a $i"
+             	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}./ &&\
+            	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME} &
+            	fi
+              done
+          done; wait
       - run: ls -ltra ./artifacts/
   release:
     needs: build
