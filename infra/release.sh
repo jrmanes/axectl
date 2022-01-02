@@ -1,24 +1,13 @@
 #!/bin/bash
 
-ygoos=(
-"linux"
-"windows"
-"darwin"
-)
-
-arch=(
-"386"
-"amd64"
-"arm64"
-)
+goos=("linux" "windows" "darwin")
+arch=("386" "amd64" "arm64")
 
 PROJECT_NAME=piktoctl
-
 mkdir -p ./artifacts
-
 for a in ${goos[@]}; do
 	for i in ${arch[@]}; do
-		if [[ $a == "darwin" && $i == "386" ]]; then
+                if [[ "$a" == "darwin" && "$i" == "386" ]] || [[ "$a" == "windows" && "$i" == "arm64" ]];then
 	  		echo "Not allowed: $a $i"
 		else
 	  		echo "Building: $a $i"
