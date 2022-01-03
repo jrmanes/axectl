@@ -1,5 +1,5 @@
 ---
-name: CI
+name: CI/CD - Release
 on:
   push:
     tags:
@@ -31,9 +31,6 @@ jobs:
       - name: Build app
         uses: actions/setup-go@v2
         with:
-          go-version: ${{ matrix.go }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
           path: artifacts/
       - run: mkdir -p ./artifacts/ 
       - run: |
@@ -71,5 +68,5 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
-          artifacts: ./artifacts/piktoctl-*-*.tar.gz
+          artifacts: ./artifacts/*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}

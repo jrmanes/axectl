@@ -1,5 +1,5 @@
 ---
-name: CI
+name: CI - Build
 on:
   push:
     branches:
@@ -23,26 +23,3 @@ jobs:
         run: go test ./... -v -coverprofile cover.out
       - name: Code Coverage
         run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
-  build-matrix:
-    name: Release Go Binary
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [ '1.17.3' ]
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build app
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./bin/${{ matrix.goos }}/${{ matrix.goarch }}/piktoctl ./
