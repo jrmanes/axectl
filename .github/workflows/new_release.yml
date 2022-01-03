@@ -14,12 +14,10 @@ jobs:
         os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
-      - name: Install Go
+      - name: Install Go/ Build app
         uses: actions/setup-go@v2
         with:
           go-version: 1.17.x
-      - name: Build app
-        with:
           path: artifacts/
         run: |
           goos=( "linux" "windows") 
