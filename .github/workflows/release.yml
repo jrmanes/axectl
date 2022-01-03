@@ -5,24 +5,6 @@ on:
     tags:
       - "v*"
 jobs:
-  test:
-    name: Unit Tets
-    strategy:
-      matrix:
-        go-version: [1.16.x, 1.17.x]
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Unit Test
-        run: go test ./... -v -coverprofile cover.out
-      - name: Code Coverage
-        run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
   build:
     name: Build Go Binary
     runs-on: ubuntu-latest
@@ -32,7 +14,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           path: artifacts/
-      - run: mkdir -p ./artifacts/ 
       - run: |
           goos=( "linux" "windows") 
           #goos=( "linux" "windows" "darwin")
@@ -63,8 +44,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           path: ./artifactsi/
-      - run: ls -ltra ./
-      - run: ls -ltra ./artifacts/
+        run: ls -ltra ./ && ls -ltra ./artifacts/
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
