@@ -31,12 +31,7 @@ jobs:
             	fi
               done
           done
-      - run: ls -ltra ./artifacts/
-  release:
-    needs: build
-    name: Release Go Binary
-    runs-on: ubuntu-latest
-    steps:
+          ls -ltra ./artifacts/
       - name: Check artifacts
         uses: actions/setup-go@v2
         with:
