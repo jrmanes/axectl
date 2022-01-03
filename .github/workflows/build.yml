@@ -23,3 +23,4 @@ jobs:
         run: go test ./... -v -coverprofile cover.out
       - name: Code Coverage
         run: go tool cover -func ./cover.out | grep total | awk '{print $3}'
+
