@@ -5,8 +5,8 @@ on:
     tags:
       - "v*"
 jobs:
-  build:
-    name: Build Go Binary
+  install:
+    name: Install go Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -14,7 +14,16 @@ jobs:
         os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
-      - name: Install Go/ Build app
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.x
+  build:
+    name: Build app
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build app
         with:
           path: artifacts/
         run: |
