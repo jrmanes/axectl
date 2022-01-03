@@ -45,3 +45,4 @@ jobs:
           path: artifacts/
           artifacts: ./artifacts/*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
+
