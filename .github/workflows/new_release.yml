@@ -17,6 +17,7 @@ jobs:
       - checkout
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - shell: bash
         run: |
           goos=( "linux" "windows") 
