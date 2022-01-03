@@ -32,7 +32,6 @@ jobs:
               done
           done
           ls -ltra ./artifacts/
-
   release:
     name: Release
     needs:
