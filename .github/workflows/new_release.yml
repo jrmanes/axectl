@@ -13,8 +13,35 @@ jobs:
       - shell: bash
         run: |
           goos=( "linux" "windows") 
-          #goos=( "linux" "windows" "darwin")
           arch=( "386" "amd64" "arm64" )
+          PROJECT_NAME=piktoctl
+          mkdir -p ./artifacts
+          for a in ${goos[@]}; do
+              for i in ${arch[@]}; do
+                if [[ "$a" == "darwin" && "$i" == "386" ]] || [[ "$a" == "windows" && "$i" == "arm64" ]];then
+                  echo "Not allowed: $a $i"
+            	else
+            	  echo "Building: Platform [$a] - Arch [$i]"
+             	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}
+            	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME}
+            	fi
+              done
+          done
+          ls -ltra ./artifacts/
+      - uses: ncipollo/release-action@v1
+        with:
+          path: artifacts/
+          artifacts: ./artifacts/*.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+  build_macos:
+    name: Build MacOS Go Binary
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - shell: bash
+        run: |
+          goos=( "darwin") 
+          arch=( "amd64" "arm64" )
           PROJECT_NAME=piktoctl
           mkdir -p ./artifacts
           for a in ${goos[@]}; do
