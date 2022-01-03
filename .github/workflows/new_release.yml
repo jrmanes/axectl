@@ -17,9 +17,7 @@ jobs:
       - checkout
     runs-on: ubuntu-latest
     steps:
-      - name: Build app
-        with:
-          path: artifacts/
+      - shell: bash
         run: |
           goos=( "linux" "windows") 
           #goos=( "linux" "windows" "darwin")
