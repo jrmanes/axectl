@@ -9,7 +9,8 @@ jobs:
     name: Build Go Binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Build app
         with:
           path: artifacts/
@@ -31,14 +32,13 @@ jobs:
               done
           done
           ls -ltra ./artifacts/
-      - name: Check artifacts
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          path: ./artifactsi/
-        run: ls -ltra ./ && ls -ltra ./artifacts/
+
+  release:
+    name: Release
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
