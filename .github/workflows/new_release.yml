@@ -5,20 +5,14 @@ on:
     tags:
       - "v*"
 jobs:
-  checkout:
-    name: Checkout
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
   build:
     name: Build Go Binary
-    needs:
-      - checkout
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - shell: bash
+        with:
+          path: artifacts/
         run: |
           goos=( "linux" "windows") 
           #goos=( "linux" "windows" "darwin")
@@ -30,19 +24,13 @@ jobs:
                 if [[ "$a" == "darwin" && "$i" == "386" ]] || [[ "$a" == "windows" && "$i" == "arm64" ]];then
                   echo "Not allowed: $a $i"
             	else
-            	  echo "Building: $a $i"
+            	  echo "Building: Platform [$a] - Arch [$i]"
              	  CGO_ENABLED=0 GOOS=$a GOARCH=$i go build -o ./bin/$a/$i/${PROJECT_NAME}
             	  tar -czvf ./artifacts/${PROJECT_NAME}-$a-$i.tar.gz ./bin/$a/$i/${PROJECT_NAME}
             	fi
               done
           done
           ls -ltra ./artifacts/
-  release:
-    name: Release
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    steps:
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
