@@ -11,8 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - shell: bash
-        with:
-          path: artifacts/
         run: |
           goos=( "linux" "windows") 
           #goos=( "linux" "windows" "darwin")
