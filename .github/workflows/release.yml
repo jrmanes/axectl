@@ -71,5 +71,5 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           path: artifacts/
-          artifacts: piktoctl-*-*.tar.gz
+          artifacts: ./artifacts/piktoctl-*-*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
