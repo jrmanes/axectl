@@ -14,7 +14,7 @@ jobs:
         uses: actions/setup-go@v2
         with:
           path: artifacts/
-      - run: |
+        run: |
           goos=( "linux" "windows") 
           #goos=( "linux" "windows" "darwin")
           arch=( "386" "amd64" "arm64" )
