@@ -6,7 +6,7 @@ on:
       - "v*"
 jobs:
   checkout:
-    name: Build Go Binary
+    name: Checkout
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
