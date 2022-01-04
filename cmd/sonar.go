@@ -80,19 +80,19 @@ piktoctl sonar -i
 
 - Start the service, creating the projects and scan them:
 
-piktoctl sonar -r -c --scan -p "someProject" -o "someOrganization"
+piktoctl sonar -s -c --scan -p "someProject" -o "someOrganization"
 
 Or specify multiple packages separated by comas:
 
-piktoctl sonar -r -c --scan -p "someProject1,someProjet2,someProject3" -o "someOrganization"
+piktoctl sonar -s -c --scan -p "someProject1,someProjet2,someProject3" -o "someOrganization"
 
 - Start the service
 
-piktoctl sonar -r -p "someProject" -o "someOrganization"
+piktoctl sonar -s -p "someProject" -o "someOrganization"
 
 - Start the service creating the projects
 
-piktoctl sonar -r -c -p "someProject" -o "someOrganization"
+piktoctl sonar -s -c -p "someProject" -o "someOrganization"
 
 - Check the status of the service
 
@@ -133,11 +133,11 @@ func init() {
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
 	sonarCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
 	sonarCmd.PersistentFlags().StringP("project", "p", "", "You can add one project name or multiple separated by comas.")
-	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Start running the SonarQube container")
+	sonarCmd.PersistentFlags().BoolP("start", "s", true, "Start running the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
-	sonarCmd.PersistentFlags().BoolP("debug", "", false, "Set debug option")
+	sonarCmd.PersistentFlags().BoolP("debug", "d", false, "Set debug option")
 }
 
 // StartSonar initialize all the subcommands and detect the arguments
@@ -165,9 +165,9 @@ func StartSonar(cmd *cobra.Command) {
 	if cmd.Flags().Changed("install") {
 		install(debug)
 	}
-	// check if the run flag has change, execute run function
-	if cmd.Flags().Changed("run") {
-		run()
+	// check if the start flag has change, execute start function
+	if cmd.Flags().Changed("start") {
+		start()
 	}
 	// validates the organization and project flags values
 	if cmd.Flags().Changed("organization") || cmd.Flags().Changed("project") {
@@ -444,8 +444,8 @@ func SonarScanner(p, token string) error {
 	return nil
 }
 
-// run configure and initialize the containers
-func run() {
+// start configure and initialize the containers
+func start() {
 	fmt.Println("[INFO] 🚢 We are starting the setup process... this can take some seconds...")
 	configureSystem()
 

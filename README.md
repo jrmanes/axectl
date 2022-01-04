@@ -20,7 +20,7 @@ sudo reboot now
 ```
 - Start the SonarQube service
 ```bash
-piktoctl sonar -r
+piktoctl sonar -s
 ```
 - Access in your browser and set the admin password (follow the instruction in the tool)
 - Go to the parent folder of your project
@@ -44,17 +44,17 @@ piktoctl sonar -i
 
 - Start the service, creating the projects and scan them
 ```bash
-piktoctl sonar -r -c --scan -p "someProject" -o "someOrganization"
+piktoctl sonar -s -c --scan -p "someProject" -o "someOrganization"
 ```
 
 - Start the service
 ```bash
-piktoctl sonar -r -p "someProject" -o "someOrganization"
+piktoctl sonar -s -p "someProject" -o "someOrganization"
 ```
 
 - Start the service creating the projects
 ```bash
-piktoctl sonar -r -c -p "someProject" -o "someOrganization"
+piktoctl sonar -s -c -p "someProject" -o "someOrganization"
 ```
 
 - Check the status of the service 
