@@ -57,7 +57,9 @@ type TokenResponse struct {
 var sonarCmd = &cobra.Command{
 	Use:   "sonar",
 	Short: "SonarQube command options",
-	Long: `Piktoctl has the command sonar which allows you to have a SonarQube in your local dev env.
+	Long: `-----------------------------------------------------------------------------------------
+
+📡 Piktoctl has the command sonar which allows you to have a SonarQube in your local dev env.
 
 Features: 
 - Install all the packages needed to run SonarQube and execute scans.
@@ -121,31 +123,21 @@ var (
 	tokensFolder             = "/.piktoctl/sonar/tokens/"
 )
 
+// init add al flags to the sonarCmd command
 func init() {
 	rootCmd.AddCommand(sonarCmd)
 	// Here you will define your flags and configuration settings.
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// sonarCmd.PersistentFlags().String("foo", "", "A help for foo")
-	// sonarCmd.Flags().String("", "", "A help for foo")
-
 	sonarCmd.PersistentFlags().BoolP("install", "i", true, "[*] TODO: Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
-
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
-	rootCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
-	rootCmd.PersistentFlags().StringP("project", "p", "", "You can add one project name or multiple separated by comas.")
+	sonarCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
+	sonarCmd.PersistentFlags().StringP("project", "p", "", "You can add one project name or multiple separated by comas.")
 	sonarCmd.PersistentFlags().BoolP("run", "r", true, "Start running the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("stop", "", true, "Stop the SonarQube container")
 	sonarCmd.PersistentFlags().BoolP("status", "", true, "Check the docker container status")
 	sonarCmd.PersistentFlags().StringP("user", "u", "admin:admin123.", "Use your user:password  -> Example: admin:admin123.")
-
 	sonarCmd.PersistentFlags().BoolP("debug", "", false, "Set debug option")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// sonarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // StartSonar initialize all the subcommands and detect the arguments
