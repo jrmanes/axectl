@@ -404,7 +404,7 @@ func SonarScanner(p, token string) error {
 	//-Dsonar.sonar.host.url=http://sonarqube:9000 \
 	//-Dsonar.login=`+token
 
-	// chekk if command: sonar-scanner exists in path
+	// check if command: sonar-scanner exists in path
 	exists := CommandExists("sonar-scanner")
 	if !exists {
 		log.Fatal(exists)
@@ -459,9 +459,9 @@ func run() {
 
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal("Please, check that your current user has permissions to execute docker \n"+
-			"you can add it to the docker group executing: sudo usermod -aG docker $USER \n"+
-			"After that, please, reboot your system \n", err)
+		log.Fatal(`Please, check that your current user has permissions to execute docker
+			you can add it to the docker group executing: sudo usermod -aG docker $USER
+			After that, please, reboot your system \n`, err)
 	}
 
 	// Grant enough time to allow the service start
@@ -487,7 +487,7 @@ func run() {
 	fmt.Println("[INFO] 🚧 Please, open the following link and change the password when the service will be up")
 	fmt.Println("[INFO] 👤 Default user [" + sonarUser + ":admin]")
 	fmt.Println("[INFO]  http://localhost:9000/")
-	fmt.Println("[INFO] 🚨 RECOMMENDATION: Change the password to: " + "[" + sonarPass + "] ")
+	fmt.Println("[INFO] 🚨 RECOMMENDATION: Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
 	fmt.Println("[INFO] Press enter once you have change the password. ")
 
 	buf := bufio.NewReader(os.Stdin)
@@ -703,7 +703,7 @@ func GetTokenInFile(tokenName string) (string, error) {
 		log.Println("user home dir not found...")
 		return "", err
 	}
-	tokenValue := dirname + "/.piktoctl/sonar/tokens/" + tokenName
+	tokenValue := dirname + tokensFolder + tokenName
 
 	t, err2 := ioutil.ReadFile(tokenValue) // just pass the file name
 	if err2 != nil {

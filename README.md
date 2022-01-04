@@ -89,6 +89,8 @@ sudo cp ./piktoctl /usr/bin/
   - [x] List tokens
   - [ ] Delete tokens
 - [x] Setup debug argument
+- [ ] Flag to specify the code coverage file
+- [ ] Update from the CLI
 
 ---
 
