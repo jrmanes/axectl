@@ -57,9 +57,9 @@ llllllllllllllodddddddddllllllllllllllllllllllllll
 llllllllllllllllllllllllllllllllllllllllllllllllll
 llllllllllllllllllllllllllllllllllllllllllllllllll
 llllllllllllllllllllllllllllllllllllllllllllllllll
----------------
-Piktoctl is a set of tools for the piktodevs.
----------------`,
+--------------------------------------------------
+Piktoctl is a set of tools for piktodevs.
+-------------------------------------------------`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
