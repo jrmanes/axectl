@@ -128,7 +128,7 @@ func init() {
 	rootCmd.AddCommand(sonarCmd)
 	// Here you will define your flags and configuration settings.
 
-	sonarCmd.PersistentFlags().BoolP("install", "i", true, "[*] TODO: Install all requirements needed")
+	sonarCmd.PersistentFlags().BoolP("install", "i", true, "Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
 	sonarCmd.PersistentFlags().StringP("organization", "o", "", "Organization in SonarQube")
