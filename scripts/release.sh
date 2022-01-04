@@ -16,6 +16,3 @@ for a in ${goos[@]}; do
 		fi
 	done
 done; wait
-
-
-
