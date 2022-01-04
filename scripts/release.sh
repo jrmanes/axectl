@@ -1,10 +1,18 @@
 #!/bin/bash
 
+PROJECT_NAME=piktoctl
 goos=("linux" "windows" "darwin")
 arch=("386" "amd64" "arm64")
 
-PROJECT_NAME=piktoctl
-mkdir -p ./artifacts
+if [ -d ./artifacts ];then
+  rm -fr ./artifacts
+fi
+if [ -d ./bin ];then
+  rm -fr ./bin
+fi
+
+mkdir -p ./artifacts ./bin
+
 for a in ${goos[@]}; do
 	for i in ${arch[@]}; do
     if [[ "$a" == "darwin" && "$i" == "386" ]] || [[ "$a" == "windows" && "$i" == "arm64" ]];then
