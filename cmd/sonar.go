@@ -262,7 +262,7 @@ func linuxSystem(debug bool) {
 	}
 	home := user.HomeDir
 
-	// lco list of commands to execute
+	// commands list of commands to execute
 	commands := Commands{Command{
 		message: "[INFO] 📦 Download package Sonar Scanner... ",
 		command: "wget",
