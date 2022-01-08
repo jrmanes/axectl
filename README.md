@@ -1,43 +1,44 @@
 # Piktoctl
 
-Piktoctl is a set of tools for developers, we have different options for the tools.
+Piktoctl is a set of tools for developers, we can create different commands to abstract manual tasks.
 
----
+This tool is written in [Go](https://go.dev/) with the [cobra](https://github.com/spf13/cobra) framework.
 
-## Installation Steps
-
-- Copy to path 
-```bash
-sudo cp ./piktoctl /usr/bin/
-```
-- Install requirements
-```bash
-piktoctl sonar -i
-```
-- Reboot system
-```bash
-sudo reboot now
-```
-- Start the SonarQube service
-```bash
-piktoctl sonar -s
-```
-- Access in your browser and set the admin password (follow the instruction in the tool)
-- Go to the parent folder of your project
-- Create the projects and scan them
-```bash
-piktoctl sonar -c --scan -p "piktostory" -o "Piktochart"
-```
+As result of the project, we obtain a binary which can be compiled for the different platforms and architectures.
 
 ---
 
 ## Sonar
 
-Piktoctl has the command `sonar` which allows you to have a **SonarQube** in your local dev env.
+Piktoctl has the command `sonar` which allows you to setup and configure a **SonarQube** in your local dev env.
 
-There are different options for `sonar`:
+This command is an abstraction to setup and configure the project in **SonarQube**.
 
-- Install needed packages:
+### What it does?
+
+The CLI with the command `sonar` uses [docker](https://www.docker.com/), [docker-compose](https://docs.docker.com/compose/) and the [sonar-scanner](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
+
+Some [features](#features) are:
+
+- Use two docker containers:`SonarQube` and `PostgresSQL`
+- Use the `sonar-scanner` to analyze the code
+- The tool `piktoctl` communicates to the `SonarQube` API to create the projects and the tokens automatically, the tokens are store in the path `~/.piktoctl/sonar/token`
+- It downloads the `sonar-scanner` automatically and place it in `~/.sonar-scanner-4.6.2.2472-linux/`, however, you can do it manually
+- `piktoctl` has the flag `-i` which install you all the needed requirements for you, the requirements are needed to run `Docker` in your computer and execute `sonar-scanner`, the requirements are:
+  - wget
+  - unzip
+  - docker
+  - docker-compose
+  - openjdk-11-jre-headless
+  - default-jre
+  - default-jdk
+- The flag `-i` also add your user to the `Docker` group.
+- It asks you to restart your computer for changes to take effect.
+
+### Examples
+
+- Install requirements, this step install all the requirements to run `Docker` and the `sonar-scanner` in your computer. [features](#features)
+- After the installation, you will be prompt to restart your computer, this is because is needed after add your user to the `Docker` group [source](https://docs.docker.com/engine/install/linux-postinstall/)
 ```bash
 piktoctl sonar -i
 ```
@@ -57,16 +58,26 @@ piktoctl sonar -s -p "someProject" -o "someOrganization"
 piktoctl sonar -s -c -p "someProject" -o "someOrganization"
 ```
 
-- Check the status of the service 
+- With SonarQube running, create the projects and scan them
+```bash
+piktoctl sonar -c --scan -p "piktostory" -o "Piktochart"
+```
+
+- Check the status of the service
 ```bash
 piktoctl sonar --status 
+```
+
+- Start the SonarQube service
+```bash
+piktoctl sonar -s
 ```
 
 ---
 
 ## Add to path
 
-You can easy execute `piktoctl` adding it to some path that you have configured in your `$PATH`.
+You can easy execute `piktoctl` anywhere adding the binary to some path that you have configured in your `$PATH`.
 
 You can use for instance the path:
 `/usr/bin/`
@@ -88,12 +99,11 @@ sudo cp ./piktoctl /usr/bin/
   - [x] Create tokens inside the config path
   - [x] List tokens
   - [ ] Delete tokens
+  - [ ] Delete all resources created
 - [x] Setup debug argument
 - [ ] Flag to specify the code coverage file
-- [ ] Update from the CLI
-
----
-
-Jose Ramon Mañes
+- [ ] Update release from the CLI
+- [ ] Refactor
+- [ ] Change `sonar-scanner` for a `Docker` container to execute the scanner
 
 ---
