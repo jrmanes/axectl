@@ -58,6 +58,11 @@ piktoctl sonar -s -p "someProject" -o "someOrganization"
 piktoctl sonar -s -c -p "someProject" -o "someOrganization"
 ```
 
+- Start the service creating multiple projects
+```bash
+piktoctl sonar -s -c -p "someProject1,someProject2,someProject3" -o "someOrganization"
+```
+
 - With SonarQube running, create the projects and scan them
 ```bash
 piktoctl sonar -c --scan -p "piktostory" -o "Piktochart"
