@@ -552,7 +552,47 @@ func configureSystem() {
 
 // dockerComposeFile returns all the data inside the docker-compose.yml file
 func dockerComposeFile() string {
-	dockerFile := `
+	var dockerFile string
+
+	switch o := detectOS(); o {
+	case "darwin":
+		dockerFile = `
+version: "3"
+services:
+  sonarqube:
+    image: sonarqube:9.2-community
+    platform: linux/amd64
+    expose:
+      - 9000
+    ports:
+      - "9000:9000"
+    networks:
+      - sonar
+    environment:
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+      - sonar.jdbc.url=jdbc:postgresql://psql:5432/sonar
+  psql:
+    image: postgres:9.5
+    networks:
+      - sonar
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DATABASE=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+networks:
+  sonar:
+volumes:
+  postgresql_data:
+  postgresql:
+`
+	case "linux":
+		dockerFile = `
 version: "3"
 services:
   sonarqube:
@@ -586,6 +626,10 @@ volumes:
   postgresql_data:
   postgresql:
 `
+	default:
+		fmt.Println("💡 OS not detected...")
+	}
+
 	return dockerFile
 }
 
