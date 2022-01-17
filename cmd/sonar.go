@@ -157,14 +157,14 @@ func StartSonar(cmd *cobra.Command) {
 		u, _ = cmd.Flags().GetString("user")
 		// split the string in the colons
 		userData := strings.Split(u, ":")
-		fmt.Println("[INFO] New user config:", u)
-		fmt.Println("[INFO] New user data:", userData)
+		fmt.Println("ℹ️ New user config:", u)
+		fmt.Println("ℹ️ New user data:", userData)
 
 		// add the first and second value to the variables
 		sonarUser = userData[0]
 		sonarPass = userData[1]
 
-		fmt.Println("[INFO] New user config:", sonarUser, sonarPass)
+		fmt.Println("New user config:", sonarUser, sonarPass)
 	}
 	// check if the install flag has change, execute install function and send the value of the debug
 	if cmd.Flags().Changed("install") {
@@ -177,7 +177,7 @@ func StartSonar(cmd *cobra.Command) {
 	// validates the organization and project flags values
 	if cmd.Flags().Changed("organization") || cmd.Flags().Changed("project") {
 		if organization == "" || project == "" {
-			fmt.Println("[ERROR] Organization needs to be set, use parameter: -o ")
+			fmt.Println("[ERROR] 🔥 Organization needs to be set, use parameter: -o ")
 		}
 	}
 	// check if the create flag has change, execute create function
@@ -202,7 +202,7 @@ func install(debug bool) {
 	// TODO: allow installation for MacOS & Windows
 	switch os := detectOS(); os {
 	case "darwin":
-		fmt.Println("TODO: Install packages for MacOS, Development pending...")
+		fmt.Println("ℹ️ TODO: Install packages for MacOS, Development pending...")
 	case "linux":
 		LinuxPkg(debug)
 	default:
@@ -225,7 +225,7 @@ func LinuxPkg(debug bool) {
 	}
 
 	// Update the package list
-	fmt.Println("[INFO] 📦 Update package list... ")
+	fmt.Println("📦 Update package list... ")
 	cmd := exec.Command("sudo", "apt", "update")
 	if debug {
 		cmd.Stdin = os.Stdin
@@ -238,7 +238,7 @@ func LinuxPkg(debug bool) {
 
 	// Loop inside all packages and install them one by one
 	for _, p := range packages {
-		fmt.Println("[INFO] 📦 Installing package: ", p)
+		fmt.Println("📦 Installing package: ", p)
 
 		cmd := exec.Command("sudo", "apt", "install", "-y", p)
 		if debug {
@@ -250,7 +250,7 @@ func LinuxPkg(debug bool) {
 		if err != nil {
 			log.Fatal(err)
 		} else {
-			fmt.Println("[INFO] ✅ ", p, " -> successfully installed!")
+			fmt.Println("✅ ", p, " -> successfully installed!")
 		}
 	}
 
@@ -269,43 +269,43 @@ func linuxSystem(debug bool) {
 
 	// commands list of commands to execute
 	commands := Commands{Command{
-		message: "[INFO] 📦 Download package Sonar Scanner... ",
+		message: "📦 Download package Sonar Scanner... ",
 		command: "wget",
 		args:    []string{"https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip"},
 	}, Command{
-		message: "[INFO] 📦 Unzip package Sonar Scanner... ",
+		message: "📦 Unzip package Sonar Scanner... ",
 		command: "unzip",
 		args:    []string{"-o", "/tmp/sonar-scanner.zip", "-d", "/tmp/"},
 	}, Command{
-		message: "[INFO] 📦 Copy package Sonar Scanner to ~/",
+		message: "📦 Copy package Sonar Scanner to ~/",
 		command: "cp",
 		args:    []string{"-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", home + "/"},
 	}, Command{
-		message: "[INFO] 📦 Clean folder if exists in: " + home,
+		message: "📦 Clean folder if exists in: " + home,
 		command: "rm",
 		args:    []string{"-rf", home + "/.sonar-scanner-4.6.2.2472-linux/"},
 	}, Command{
-		message: "[INFO] 📦 Hide folder package Sonar Scanner in: " + home,
+		message: "📦 Hide folder package Sonar Scanner in: " + home,
 		command: "mv",
 		args:    []string{home + "/sonar-scanner-4.6.2.2472-linux/", home + "/.sonar-scanner-4.6.2.2472-linux"},
 	}, Command{
-		message: "[INFO] 📦 Copy package Sonar Scanner to /usr/local/bin",
+		message: "📦 Copy package Sonar Scanner to /usr/local/bin",
 		command: "sudo",
 		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
 	}, Command{
-		message: "[INFO] 📦 Copy library Sonar Scanner to /usr/local/lib",
+		message: "📦 Copy library Sonar Scanner to /usr/local/lib",
 		command: "sudo",
 		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
 	}, Command{
-		message: "[INFO] 📦 Remove java from sonar-scanner",
+		message: "📦 Remove java from sonar-scanner",
 		command: "rm",
 		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
 	}, Command{
-		message: "[INFO] 📦 Copy java from system",
+		message: "📦 Copy java from system",
 		command: "ln",
 		args:    []string{"-s", "/usr/bin/java", home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
 	}, Command{
-		message: "[INFO] 📦 Add docker group to the user: " + user.Username + "",
+		message: "📦 Add docker group to the user: " + user.Username + "",
 		command: "sudo",
 		args:    []string{"usermod", "-aG", "docker", user.Username},
 	},
@@ -328,7 +328,7 @@ func linuxSystem(debug bool) {
 	// set the env var for java_home, specifying the path
 	os.Setenv("JAVA_HOME", "/usr/lib/jvm/java-11-openjdk")
 
-	fmt.Println("[INFO] 📦 Cleaning temporary path...")
+	fmt.Println("📦 Cleaning temporary path...")
 	cmd := exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
 	if debug {
 		cmd.Stdin = os.Stdin
@@ -339,8 +339,8 @@ func linuxSystem(debug bool) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("[INFO] ✅ All packages have been installed successfully!")
-	fmt.Println("[INFO] 🔄 Please restart your computer to execute: sonar-scanner")
+	fmt.Println("✅ All packages have been installed successfully!")
+	fmt.Println("🔄 Please restart your computer to execute: sonar-scanner")
 }
 
 // status check the status of the containers
@@ -360,12 +360,12 @@ func status() {
 func scan() {
 	// set the current time
 	now := time.Now()
-	fmt.Println("[INFO] 🔭 Scanning projects...")
+	fmt.Println("🔭 Scanning projects...")
 	// get the projects from the argument and split each by ,
 	projects := strings.Split(project, ",")
 	// crate the project in SQ
 	for _, p := range projects {
-		fmt.Println("[INFO] 🔭 Scanning project...", p)
+		fmt.Println("🔭 Scanning project...", p)
 		out, err := exec.Command("pwd").Output()
 		if err != nil {
 			log.Fatal(err)
@@ -389,9 +389,9 @@ func scan() {
 		}
 	}
 	// show how long it takes
-	fmt.Println("[INFO] ---------------------------- ")
-	fmt.Println("[INFO] Elapse: ", time.Since(now))
-	fmt.Println("[INFO] ---------------------------- ")
+	fmt.Println("---------------------------- ")
+	fmt.Println("Elapse: ", time.Since(now))
+	fmt.Println("---------------------------- ")
 }
 
 // SonarScanner executes the scanner of code
@@ -435,9 +435,9 @@ func SonarScanner(p, token string) error {
 -Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx,**/__tests__/**,e2e/**" \
 -Dsonar.login=` + token
 
-	fmt.Println("[INFO] ---------------")
+	fmt.Println("---------------")
 	fmt.Println("command: ", command)
-	fmt.Println("[INFO] ---------------")
+	fmt.Println("---------------")
 	//
 	cmd := exec.Command("bash", "-c", command)
 
@@ -454,7 +454,7 @@ func SonarScanner(p, token string) error {
 
 // start configure and initialize the containers
 func start() {
-	fmt.Println("[INFO] 🚢 We are starting the setup process... this can take some seconds...")
+	fmt.Println("🚢 We are starting the setup process... this can take some seconds...")
 	// configure the system needs
 	configureSystem()
 
@@ -475,30 +475,30 @@ func start() {
 	}
 
 	// Give enough time to allow the service start
-	fmt.Println("[INFO] 🚢 SonarQube is starting, wait some seconds...")
+	fmt.Println("🚢 SonarQube is starting, wait some seconds...")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕐")
+	fmt.Println("🕐")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕑")
+	fmt.Println("🕑")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕓")
+	fmt.Println("🕓")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕔")
+	fmt.Println("🕔")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕕")
+	fmt.Println("🕕")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕖")
+	fmt.Println("🕖")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕗")
+	fmt.Println("🕗")
 	time.Sleep(1 * time.Second)
-	fmt.Println("[INFO] 🕘")
+	fmt.Println("🕘")
 	time.Sleep(1 * time.Second)
 
-	fmt.Println("[INFO] 🚧 Please, open the following link and change the password when the service will be up")
-	fmt.Println("[INFO] 👤 Default user [" + sonarUser + ":admin]")
-	fmt.Println("[INFO]  http://localhost:9000/")
-	fmt.Println("[INFO] 🚨 RECOMMENDATION: Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
-	fmt.Println("[INFO] Press enter once you have change the password. ")
+	fmt.Println("🚧 Please, open the following link and change the password when the service will be up")
+	fmt.Println("👤 Default user [" + sonarUser + ":admin]")
+	fmt.Println("⚠️ http://localhost:9000/")
+	fmt.Println("🚨 RECOMMENDATION: \n ⚠️ Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
+	fmt.Println("⚠️ Press enter once you have change the password... ")
 
 	// wait until confirmation
 	buf := bufio.NewReader(os.Stdin)
@@ -508,12 +508,12 @@ func start() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("[INFO] 🙉 SonarQube is up an running!")
+	fmt.Println("🙉 SonarQube is up an running!")
 }
 
 // stop the docker-compose containers
 func stop() {
-	fmt.Println("[INFO] Stopping SonarQube...")
+	fmt.Println("Stopping SonarQube...")
 	cmd := exec.Command("docker-compose", "-f", filePath+fileName, "stop")
 
 	cmd.Stdin = os.Stdin
@@ -524,15 +524,15 @@ func stop() {
 		panic(err)
 	}
 
-	fmt.Println("[INFO] 👋 SonarQube is stopped!")
+	fmt.Println("👋 SonarQube is stopped!")
 }
 
 // configureSystem set the needed path to the sysctl
 // https://docs.sonarqube.org/7.3/HardwareRecommendations.html
 func configureSystem() {
-	fmt.Println("[INFO] Starting the containers, it can take a while...")
-	fmt.Println("[INFO] 🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
-	fmt.Println("[INFO] 🔓 We need to run as ROOT...")
+	fmt.Println("Starting the containers, it can take a while...")
+	fmt.Println("🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
+	fmt.Println("🔓 We need to run as ROOT...")
 
 	// check the os and configure depending on which one is
 	switch o := detectOS(); o {
@@ -546,7 +546,7 @@ func configureSystem() {
 			panic(err)
 		}
 	default:
-		fmt.Println("[INFO] Not OS detected...")
+		fmt.Println("Not OS detected...")
 	}
 }
 
@@ -635,14 +635,14 @@ volumes:
 
 // createProject generates the project in SonarQube
 func createProject() {
-	fmt.Println("[INFO] --------------------------------------------------------------")
-	fmt.Println("[INFO] 💡 The organization to create the project is: ", organization)
-	fmt.Println("[INFO] --------------------------------------------------------------")
+	fmt.Println("--------------------------------------------------------------")
+	fmt.Println("💡 The organization to create the project is: ", organization)
+	fmt.Println("--------------------------------------------------------------")
 
 	projects := strings.Split(project, ",")
 	// crate the project in Sonar
 	for _, p := range projects {
-		fmt.Println("[INFO] 📚 Project to create: ", p)
+		fmt.Println("📚 Project to create: ", p)
 
 		params := url.Values{}
 		params.Add("project", p)
@@ -666,18 +666,18 @@ func createProject() {
 
 // createProjectToken generates the token for the project in SonarQube
 func createProjectToken() {
-	fmt.Println("[INFO] --------------------------------------------------------")
-	fmt.Println("[INFO] 💡 The organization to create the token is: ", organization)
-	fmt.Println("[INFO] --------------------------------------------------------")
+	fmt.Println("--------------------------------------------------------")
+	fmt.Println("💡 The organization to create the token is: ", organization)
+	fmt.Println("--------------------------------------------------------")
 
 	projects := strings.Split(project, ",")
 	// crate the project in SQ
 	for _, p := range projects {
-		fmt.Println("[INFO] 💡 Project to create the token: ", p)
+		fmt.Println("💡 Project to create the token: ", p)
 		// Get info from the actual tokens configuration
 		token, err := GetTokenInFile(p)
 		if err != nil && token == "" {
-			fmt.Println("[INFO] ✔️ Creating new token for project: ", p)
+			fmt.Println("✔️ Creating new token for project: ", p)
 
 			params := url.Values{}
 			params.Add("name", p)
@@ -719,14 +719,14 @@ func createProjectToken() {
 				tokenFile := filepath.Join(configHome, token.Name)
 				CreateFileWithContent(tokenFile, token.Token)
 			} else {
-				fmt.Println("[ERROR] Failed token creation, it's possible that the token already exists, for check it, got to:")
-				fmt.Println("[ERROR] Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
-				fmt.Println("[ERROR] http://localhost:9000/account/security")
+				fmt.Println("[ERROR] 🔥 Failed token creation, it's possible that the token already exists, for check it, got to:")
+				fmt.Println("[ERROR] 🔥 Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
+				fmt.Println("[ERROR] 🔥 http://localhost:9000/account/security")
 			}
 		} else {
-			fmt.Println("[INFO] 📜️ Using existing token for project: ", p)
+			fmt.Println("📜️ Using existing token for project: ", p)
 		}
-		fmt.Println("[INFO] --------------------------------------------------------")
+		fmt.Println("--------------------------------------------------------")
 	}
 }
 
