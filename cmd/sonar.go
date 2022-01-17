@@ -114,6 +114,7 @@ piktoctl sonar --status
 	},
 }
 
+// define vars
 var (
 	filePath                 = "/tmp/"
 	fileName                 = "docker-compose.piktochart-sonarqube"
@@ -125,9 +126,10 @@ var (
 
 // init add al flags to the sonarCmd command
 func init() {
+	// add sonarCmd command to rootCmd
 	rootCmd.AddCommand(sonarCmd)
-	// Here you will define your flags and configuration settings.
 
+	// Here you will define your flags and configuration settings.
 	sonarCmd.PersistentFlags().BoolP("install", "i", true, "Install all requirements needed")
 	sonarCmd.PersistentFlags().BoolP("scan", "", true, "Scan a project")
 	sonarCmd.PersistentFlags().BoolP("create", "c", true, "Create a project and tokens")
@@ -151,11 +153,14 @@ func StartSonar(cmd *cobra.Command) {
 
 	// check if the user and password were provided
 	if cmd.Flags().Changed("user") {
+		// assign the value from the argument to the var
 		u, _ = cmd.Flags().GetString("user")
+		// split the string in the colons
 		userData := strings.Split(u, ":")
 		fmt.Println("[INFO] New user config:", u)
 		fmt.Println("[INFO] New user data:", userData)
 
+		// add the first and second value to the variables
 		sonarUser = userData[0]
 		sonarPass = userData[1]
 
@@ -320,6 +325,7 @@ func linuxSystem(debug bool) {
 		}
 	}
 
+	// set the env var for java_home, specifying the path
 	os.Setenv("JAVA_HOME", "/usr/lib/jvm/java-11-openjdk")
 
 	fmt.Println("[INFO] 📦 Cleaning temporary path...")
@@ -352,12 +358,11 @@ func status() {
 
 // scan check every project and scan it on sonar
 func scan() {
+	// set the current time
 	now := time.Now()
-
 	fmt.Println("[INFO] 🔭 Scanning projects...")
-
+	// get the projects from the argument and split each by ,
 	projects := strings.Split(project, ",")
-
 	// crate the project in SQ
 	for _, p := range projects {
 		fmt.Println("[INFO] 🔭 Scanning project...", p)
@@ -383,6 +388,7 @@ func scan() {
 			log.Fatal(err)
 		}
 	}
+	// show how long it takes
 	fmt.Println("[INFO] ---------------------------- ")
 	fmt.Println("[INFO] Elapse: ", time.Since(now))
 	fmt.Println("[INFO] ---------------------------- ")
@@ -417,6 +423,8 @@ func SonarScanner(p, token string) error {
 	}
 	home := string(user.HomeDir)
 
+	// command to execute sonar-scanner
+	// TODO: argument to specify the sonar-scanner from the input
 	command := home + "/.sonar-scanner-4.6.2.2472-linux/bin/" + `sonar-scanner  \
 -Dsonar.host.url=http://localhost:9000 \
 -Dsonar.projectKey=` + p + ` \
@@ -447,8 +455,10 @@ func SonarScanner(p, token string) error {
 // start configure and initialize the containers
 func start() {
 	fmt.Println("[INFO] 🚢 We are starting the setup process... this can take some seconds...")
+	// configure the system needs
 	configureSystem()
 
+	// get the docker compose file
 	dockerComposeFile := dockerComposeFile()
 	fileName := CreateFileWithContent(filePath+fileName, dockerComposeFile)
 
@@ -464,7 +474,7 @@ func start() {
 			After that, please, reboot your system \n`, err)
 	}
 
-	// Grant enough time to allow the service start
+	// Give enough time to allow the service start
 	fmt.Println("[INFO] 🚢 SonarQube is starting, wait some seconds...")
 	time.Sleep(1 * time.Second)
 	fmt.Println("[INFO] 🕐")
@@ -490,6 +500,7 @@ func start() {
 	fmt.Println("[INFO] 🚨 RECOMMENDATION: Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
 	fmt.Println("[INFO] Press enter once you have change the password. ")
 
+	// wait until confirmation
 	buf := bufio.NewReader(os.Stdin)
 	fmt.Print("> ")
 	_, err = buf.ReadBytes('\n')
@@ -498,7 +509,6 @@ func start() {
 	}
 
 	fmt.Println("[INFO] 🙉 SonarQube is up an running!")
-	time.Sleep(3 * time.Second)
 }
 
 // stop the docker-compose containers
@@ -517,28 +527,27 @@ func stop() {
 	fmt.Println("[INFO] 👋 SonarQube is stopped!")
 }
 
-// Util functions
-
 // configureSystem set the needed path to the sysctl
+// https://docs.sonarqube.org/7.3/HardwareRecommendations.html
 func configureSystem() {
-	o := detectOS()
-	if o == "linux" {
+	fmt.Println("[INFO] Starting the containers, it can take a while...")
+	fmt.Println("[INFO] 🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
+	fmt.Println("[INFO] 🔓 We need to run as ROOT...")
 
-		fmt.Println("[INFO] Starting the containers, it can take a while...")
-		fmt.Println("[INFO] 🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
-		fmt.Println("[INFO] 🔓 We need to run as ROOT...")
-
+	// check the os and configure depending on which one is
+	switch o := detectOS(); o {
+	case "darwin":
+		fmt.Println("TODO: Development pending for MacOS...")
+	case "linux":
 		cmd := exec.Command("sudo", "sysctl", "-w", "vm.max_map_count=262144")
-
 		cmd.Stdin = os.Stdin
-		//cmd.Stdout = os.Stdout
-
 		err := cmd.Run()
 		if err != nil {
 			panic(err)
 		}
+	default:
+		fmt.Println("[INFO] Not OS detected...")
 	}
-
 }
 
 // dockerComposeFile returns all the data inside the docker-compose.yml file
@@ -578,24 +587,6 @@ volumes:
   postgresql:
 `
 	return dockerFile
-}
-
-// CreateFileWithContent generates the docker file in the path specified
-func CreateFileWithContent(path, content string) string {
-	// create file
-	f, err := os.Create(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	// write content
-	_, err2 := f.WriteString(content)
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-
-	return fileName
 }
 
 // createProject generates the project in SonarQube
@@ -712,6 +703,28 @@ func GetTokenInFile(tokenName string) (string, error) {
 	token := string(t)
 
 	return token, nil
+}
+
+//////////////////
+// Util functions
+//////////////////
+
+// CreateFileWithContent generates the docker file in the path specified
+func CreateFileWithContent(path, content string) string {
+	// create file
+	f, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	// write content
+	_, err2 := f.WriteString(content)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+
+	return fileName
 }
 
 // CommandExists verify if a command exists in path
