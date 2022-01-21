@@ -95,7 +95,7 @@ docker run \
 
 ## Add to path
 
-You can easy execute `piktoctl` anywhere adding the binary to some path that you have configured in your `$PATH`.
+You can easily execute `piktoctl` anywhere adding the binary to some path that you have configured in your `$PATH`.
 
 You can use for instance the path:
 `/usr/bin/`
