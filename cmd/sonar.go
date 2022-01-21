@@ -217,11 +217,6 @@ func LinuxPkg(debug bool) {
 	packages := []string{
 		"docker",
 		"docker-compose",
-		"wget",
-		"unzip",
-		"openjdk-11-jre-headless",
-		"default-jre",
-		"default-jdk",
 	}
 
 	// Update the package list
@@ -396,49 +391,25 @@ func scan() {
 
 // SonarScanner executes the scanner of code
 func SonarScanner(p, token string) error {
-	// TODO: check if docker execution worth it
-	//command := `docker run \
-	//--rm \
-	//--network=tmp_sonar \
-	//-e SONAR_HOST_URL="http://sonarqube:9000" \
-	//-v /home/joseramon/Tools/piktostory/:/root/src sonarsource/sonar-scanner-cli \
-	//-Dsonar.projectKey=`+p+` \
-	//-Dsonar.sonar.projectName=`+p+` \
-	//-Dsonar.sonar.projectVersion=1.0 \
-	//-Dsonar.scm.disabled=true \
-	//-Dsonar.sources=./ \
-	//-Dsonar.sonar.host.url=http://sonarqube:9000 \
-	//-Dsonar.login=`+token
-
-	// check if command: sonar-scanner exists in path
-	exists := CommandExists("sonar-scanner")
-	if !exists {
-		log.Fatal(exists)
-	}
-
-	// get current user
-	user, err := user.Current()
+	// get the current path
+	path, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	home := string(user.HomeDir)
 
-	// command to execute sonar-scanner
-	// TODO: argument to specify the sonar-scanner from the input
-	command := home + "/.sonar-scanner-4.6.2.2472-linux/bin/" + `sonar-scanner  \
--Dsonar.host.url=http://localhost:9000 \
+	command := `docker run \
+--rm \
+--network=tmp_sonar \
+-e SONAR_HOST_URL="http://sonarqube:9000" \
+-v ` + path + `/:/usr/src sonarsource/sonar-scanner-cli \
 -Dsonar.projectKey=` + p + ` \
 -Dsonar.sonar.projectName=` + p + ` \
+-Dsonar.sonar.projectVersion=1.0 \
 -Dsonar.sources=./` + p + ` \
--Dsonar.exclusions="**/node_modules/**" \
--Dsonar.inclusions="**,**/*.js" \
--Dsonar.tests.inclusions="src/**/*.spec.js,src/**/*.spec.jsx,src/**/*.test.js,src/**/*.test.jsx,**/__tests__/**,e2e/**" \
+-Dsonar.scm.disabled=true \
+-Dsonar.sonar.host.url=http://sonarqube:9000 \
 -Dsonar.login=` + token
 
-	fmt.Println("---------------")
-	fmt.Println("command: ", command)
-	fmt.Println("---------------")
-	//
 	cmd := exec.Command("bash", "-c", command)
 
 	cmd.Stdin = os.Stdin
@@ -719,7 +690,7 @@ func createProjectToken() {
 				tokenFile := filepath.Join(configHome, token.Name)
 				CreateFileWithContent(tokenFile, token.Token)
 			} else {
-				fmt.Println("[ERROR] 🔥 Failed token creation, it's possible that the token already exists, for check it, got to:")
+				fmt.Println("[ERROR] 🔥 Failed token creation, it's possible that the token already exists in SonarQube, for check it, got to:")
 				fmt.Println("[ERROR] 🔥 Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
 				fmt.Println("[ERROR] 🔥 http://localhost:9000/account/security")
 			}

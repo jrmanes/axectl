@@ -84,9 +84,9 @@ Base command
 	
 docker run \
       --rm \
-      --network=tmp_sonar \
+      --network=host \
       -e SONAR_HOST_URL="http://sonarqube:9000" \
-      -v /System/Volumes/Data/Volumes/Data/workspace/dev/go/github.com/jrmanes/piktoctl:/root/src sonarsource/sonar-scanner-cli \
+      -v $PWD:/usr/src sonarsource/sonar-scanner-cli \
       -Dsonar.projectKey=piktoctl \
       -Dsonar.sonar.projectName=piktoctl \
       -Dsonar.sonar.projectVersion=1.0 \
@@ -100,17 +100,17 @@ Command executed inside the tool
 
 ```bash
 docker run \
-      --rm \
-      --network=tmp_sonar \
-      -e SONAR_HOST_URL="http://sonarqube:9000" \
-      -v /home/joseramon/Tools/piktostory/:/root/src sonarsource/sonar-scanner-cli \
-      -Dsonar.projectKey=`+p+` \
-      -Dsonar.sonar.projectName=`+p+` \
-      -Dsonar.sonar.projectVersion=1.0 \
-      -Dsonar.scm.disabled=true \
-      -Dsonar.sources=./ \
-      -Dsonar.sonar.host.url=http://sonarqube:9000 \
-      -Dsonar.login=`+token
+--rm \
+--network=tmp_sonar \
+-e SONAR_HOST_URL="http://sonarqube:9000" \
+-v ` + path + `/:/usr/src sonarsource/sonar-scanner-cli \
+-Dsonar.projectKey=` + p + ` \
+-Dsonar.sonar.projectName=` + p + ` \
+-Dsonar.sonar.projectVersion=1.0 \
+-Dsonar.sources=./` + p + ` \
+-Dsonar.scm.disabled=true \
+-Dsonar.sonar.host.url=http://sonarqube:9000 \
+-Dsonar.login=` + token
 ```
 
 ---
