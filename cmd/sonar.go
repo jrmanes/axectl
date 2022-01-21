@@ -198,10 +198,9 @@ func StartSonar(cmd *cobra.Command) {
 
 // install the needed software
 func install(debug bool) {
-	// TODO: allow installation for MacOS & Windows
 	switch os := detectOS(); os {
 	case "darwin":
-		fmt.Println("ℹ️ TODO: Install packages for MacOS, Development pending...")
+		MacOSPkg(debug)
 	case "linux":
 		LinuxPkg(debug)
 	default:
@@ -235,6 +234,33 @@ func LinuxPkg(debug bool) {
 		fmt.Println("📦 Installing package: ", p)
 
 		cmd := exec.Command("sudo", "apt", "install", "-y", p)
+		if debug {
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+
+		}
+		err := cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			fmt.Println("✅ ", p, " -> successfully installed!")
+		}
+	}
+}
+
+// MacOSPkg Install needed SonarQube packages for MacOS environments
+func MacOSPkg(debug bool) {
+	// create a list with all the packages needed
+	packages := []string{
+		"docker",
+		"docker-compose",
+	}
+
+	// Loop inside all packages and install them one by one
+	for _, p := range packages {
+		fmt.Println("📦 Installing package: ", p)
+
+		cmd := exec.Command("sudo", "brew", "install", p)
 		if debug {
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
