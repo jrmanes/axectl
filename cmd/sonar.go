@@ -26,7 +26,6 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -62,7 +61,7 @@ var sonarCmd = &cobra.Command{
 📡 Piktoctl has the command sonar which allows you to have a SonarQube in your local dev env.
 
 Features: 
-- Install all the packages needed to run SonarQube and execute scans.
+- Install docker & docker-compose to run SonarQube and execute scans (not needed if you already have them).
 - Configure a SonarQube with docker for local development.
 - Start/Stop the container.
 - Check the status of the container.
@@ -248,94 +247,6 @@ func LinuxPkg(debug bool) {
 			fmt.Println("✅ ", p, " -> successfully installed!")
 		}
 	}
-
-	// Configure system
-	linuxSystem(debug)
-}
-
-// linuxSystem Configure system to execute SonarQube in Linux
-func linuxSystem(debug bool) {
-	// get current user
-	user, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
-	home := user.HomeDir
-
-	// commands list of commands to execute
-	commands := Commands{Command{
-		message: "📦 Download package Sonar Scanner... ",
-		command: "wget",
-		args:    []string{"https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip", "-O", "/tmp/sonar-scanner.zip"},
-	}, Command{
-		message: "📦 Unzip package Sonar Scanner... ",
-		command: "unzip",
-		args:    []string{"-o", "/tmp/sonar-scanner.zip", "-d", "/tmp/"},
-	}, Command{
-		message: "📦 Copy package Sonar Scanner to ~/",
-		command: "cp",
-		args:    []string{"-R", "/tmp/sonar-scanner-4.6.2.2472-linux/", home + "/"},
-	}, Command{
-		message: "📦 Clean folder if exists in: " + home,
-		command: "rm",
-		args:    []string{"-rf", home + "/.sonar-scanner-4.6.2.2472-linux/"},
-	}, Command{
-		message: "📦 Hide folder package Sonar Scanner in: " + home,
-		command: "mv",
-		args:    []string{home + "/sonar-scanner-4.6.2.2472-linux/", home + "/.sonar-scanner-4.6.2.2472-linux"},
-	}, Command{
-		message: "📦 Copy package Sonar Scanner to /usr/local/bin",
-		command: "sudo",
-		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner", "/usr/local/bin/"},
-	}, Command{
-		message: "📦 Copy library Sonar Scanner to /usr/local/lib",
-		command: "sudo",
-		args:    []string{"cp", home + "/.sonar-scanner-4.6.2.2472-linux/lib/sonar-scanner-cli-4.6.2.2472.jar", "/usr/local/lib/"},
-	}, Command{
-		message: "📦 Remove java from sonar-scanner",
-		command: "rm",
-		args:    []string{home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
-	}, Command{
-		message: "📦 Copy java from system",
-		command: "ln",
-		args:    []string{"-s", "/usr/bin/java", home + "/.sonar-scanner-4.6.2.2472-linux/jre/bin/java"},
-	}, Command{
-		message: "📦 Add docker group to the user: " + user.Username + "",
-		command: "sudo",
-		args:    []string{"usermod", "-aG", "docker", user.Username},
-	},
-	}
-
-	// loop inside all the commands to execute
-	for _, c := range commands {
-		fmt.Println(c.message)
-		c := exec.Command(c.command, c.args...)
-		if debug {
-			c.Stdin = os.Stdin
-			c.Stdout = os.Stdout
-		}
-		err = c.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	// set the env var for java_home, specifying the path
-	os.Setenv("JAVA_HOME", "/usr/lib/jvm/java-11-openjdk")
-
-	fmt.Println("📦 Cleaning temporary path...")
-	cmd := exec.Command("rm", "-fr", "/tmp/sonar-scanner-4.6.2.2472-linux/", "/tmp/sonar-scanner.zip")
-	if debug {
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-	}
-	err = cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("✅ All packages have been installed successfully!")
-	fmt.Println("🔄 Please restart your computer to execute: sonar-scanner")
 }
 
 // status check the status of the containers

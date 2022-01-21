@@ -16,22 +16,18 @@ This command is an abstraction to setup and configure the project in **SonarQube
 
 ### What it does?
 
-The CLI with the command `sonar` uses [docker](https://www.docker.com/), [docker-compose](https://docs.docker.com/compose/) and the [sonar-scanner](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
+The CLI with the command `sonar` uses [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to create the resources needed.
 
 Some [features](#features) are:
 
-- Use two docker containers:`SonarQube` and `PostgresSQL`
-- Use the `sonar-scanner` to analyze the code
+- Use three docker containers:`SonarQube`, `PostgreSQL` and `sonar-scanner`.
+  - `SonarQube` -> server
+  - `PostgreSQL` -> database engine
+  - `sonar-scanner` -> tool from Sonar to analyse the code
 - The tool `piktoctl` communicates to the `SonarQube` API to create the projects and the tokens automatically, the tokens are store in the path `~/.piktoctl/sonar/token`
-- It downloads the `sonar-scanner` automatically and place it in `~/.sonar-scanner-4.6.2.2472-linux/`, however, you can do it manually
-- `piktoctl` has the flag `-i` which install you all the needed requirements for you, the requirements are needed to run `Docker` in your computer and execute `sonar-scanner`, the requirements are:
-  - wget
-  - unzip
+- `piktoctl` has the flag `-i` which install the needed requirements for you, the requirements are:
   - docker
   - docker-compose
-  - openjdk-11-jre-headless
-  - default-jre
-  - default-jdk
 - The flag `-i` also add your user to the `Docker` group.
 - It asks you to restart your computer for changes to take effect.
 
@@ -96,23 +92,6 @@ docker run \
       -Dsonar.login=`+token
 ```
 
-Command executed inside the tool
-
-```bash
-docker run \
---rm \
---network=tmp_sonar \
--e SONAR_HOST_URL="http://sonarqube:9000" \
--v ` + path + `/:/usr/src sonarsource/sonar-scanner-cli \
--Dsonar.projectKey=` + p + ` \
--Dsonar.sonar.projectName=` + p + ` \
--Dsonar.sonar.projectVersion=1.0 \
--Dsonar.sources=./` + p + ` \
--Dsonar.scm.disabled=true \
--Dsonar.sonar.host.url=http://sonarqube:9000 \
--Dsonar.login=` + token
-```
-
 ---
 
 ## Add to path
@@ -142,7 +121,8 @@ sudo cp ./piktoctl /usr/bin/
   - [ ] Delete all resources created
 - [x] Setup debug argument
 - [ ] Flag to specify the code coverage file
-- [ ] Update release from the CLI
+- [x] Update release from the CLI
+- [x] Remove installation packages for `sonar-scanner`
 - [ ] Refactor
 
 ---
