@@ -75,6 +75,46 @@ piktoctl sonar -s
 
 ---
 
+### Sonar-scanner Docker
+
+
+Base command
+
+```bash
+	
+docker run \
+      --rm \
+      --network=tmp_sonar \
+      -e SONAR_HOST_URL="http://sonarqube:9000" \
+      -v /System/Volumes/Data/Volumes/Data/workspace/dev/go/github.com/jrmanes/piktoctl:/root/src sonarsource/sonar-scanner-cli \
+      -Dsonar.projectKey=piktoctl \
+      -Dsonar.sonar.projectName=piktoctl \
+      -Dsonar.sonar.projectVersion=1.0 \
+      -Dsonar.scm.disabled=true \
+      -Dsonar.sources=./ \
+      -Dsonar.sonar.host.url=http://sonarqube:9000 \
+      -Dsonar.login=`+token
+```
+
+Command executed inside the tool
+
+```bash
+docker run \
+      --rm \
+      --network=tmp_sonar \
+      -e SONAR_HOST_URL="http://sonarqube:9000" \
+      -v /home/joseramon/Tools/piktostory/:/root/src sonarsource/sonar-scanner-cli \
+      -Dsonar.projectKey=`+p+` \
+      -Dsonar.sonar.projectName=`+p+` \
+      -Dsonar.sonar.projectVersion=1.0 \
+      -Dsonar.scm.disabled=true \
+      -Dsonar.sources=./ \
+      -Dsonar.sonar.host.url=http://sonarqube:9000 \
+      -Dsonar.login=`+token
+```
+
+---
+
 ## Add to path
 
 You can easy execute `piktoctl` anywhere adding the binary to some path that you have configured in your `$PATH`.
