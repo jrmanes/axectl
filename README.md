@@ -74,10 +74,9 @@ piktoctl sonar -s
 ### Sonar-scanner Docker
 
 
-Base command
+You can execute the following command in order to run the analysis directly.
 
 ```bash
-	
 docker run \
       --rm \
       --network=host \
