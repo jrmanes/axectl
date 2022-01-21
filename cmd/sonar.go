@@ -73,7 +73,7 @@ USAGE Examples:
 
 Go to the parent folder, or specify the package name separated by comas.
 There are different options for sonar:
-- Install needed packages:
+- Install needed packages (not needed if you have Docker & docker-compose installed in your system):
 
 piktoctl sonar -i
 
