@@ -445,10 +445,10 @@ func start() {
 		time.Sleep(1 * time.Second)
 	}
 
-	fmt.Println("🚧 Please, open the following link and change the password when the service will be up")
+	fmt.Println("\n🚧 Please, open the following link and change the password when the service will be up")
 	fmt.Println("👤 Default user [" + sonarUser + ":admin]")
 	fmt.Println("⚠️ http://localhost:9000/")
-	fmt.Println("🚨 RECOMMENDATION: \n ⚠️ Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
+	fmt.Println("\n🚨 RECOMMENDATION: \n⚠️ Change the password to: " + "[" + sonarPass + "], otherwise, you will have to use the flag -> [user] - to provide the password")
 	fmt.Println("⚠️ Press enter once you have change the password... ")
 
 	// wait until confirmation
