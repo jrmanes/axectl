@@ -437,23 +437,15 @@ func start() {
 
 	// Give enough time to allow the service start
 	fmt.Println("🚢 SonarQube is starting, wait some seconds...")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕐")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕑")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕓")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕔")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕕")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕖")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕗")
-	time.Sleep(1 * time.Second)
-	fmt.Println("🕘")
-	time.Sleep(1 * time.Second)
+
+	// emojis clocks
+	timeEmoji := []string{"🕐", "🕑", "🕓", "🕔", "🕔", "🕕", "🕖", "🕗", "🕘"}
+
+	// look throughout the clocks
+	for i := 0; i < len(timeEmoji); i++ {
+		fmt.Printf(timeEmoji[i])
+		time.Sleep(1 * time.Second)
+	}
 
 	fmt.Println("🚧 Please, open the following link and change the password when the service will be up")
 	fmt.Println("👤 Default user [" + sonarUser + ":admin]")
