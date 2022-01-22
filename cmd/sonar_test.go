@@ -35,7 +35,6 @@ func TestStartSonar(t *testing.T) {
 			sonarCmd.SetArgs(tt.command)
 
 			// verify if the flags provided are the same as the array expected
-			//TODO: change behavior of sonarCmd arg
 			if reflect.DeepEqual(tt.args, sonarCmd.Flags()) {
 				t.Errorf("ERROR: \n name: %s, \n command: %s, \n args: %s, \n cmd: %t",
 					tt.name,

@@ -122,6 +122,7 @@ var (
 	sonarPass                = "admin123."
 	project, organization, u string
 	tokensFolder             = "/.piktoctl/sonar/tokens/"
+	dockerCompose            = "docker-compose"
 )
 
 // init add al flags to the sonarCmd command
@@ -215,7 +216,7 @@ func LinuxPkg(debug bool) {
 	// create a list with all the packages needed
 	packages := []string{
 		"docker",
-		"docker-compose",
+		dockerCompose,
 	}
 
 	// Update the package list
@@ -260,7 +261,7 @@ func MacOSPkg(debug bool) {
 	// create a list with all the packages needed
 	packages := []string{
 		"docker",
-		"docker-compose",
+		dockerCompose,
 	}
 
 	// Loop inside all packages and install them one by one
@@ -416,13 +417,13 @@ func SonarScanner(p, token string) error {
 func start() {
 	fmt.Println("🚢 We are starting the setup process... this can take some seconds...")
 	// configure the system needs
-	configureSystem()
+	ConfigureSystem()
 
 	// get the docker compose file
 	dockerComposeFile := dockerComposeFile()
 	fileName := CreateFileWithContent(filePath+fileName, dockerComposeFile)
 
-	cmd := exec.Command("docker-compose", "-f", filePath+fileName, "up", "-d")
+	cmd := exec.Command(dockerCompose, "-f", filePath+fileName, "up", "-d")
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -474,7 +475,7 @@ func start() {
 // stop the docker-compose containers
 func stop() {
 	fmt.Println("Stopping SonarQube...")
-	cmd := exec.Command("docker-compose", "-f", filePath+fileName, "stop")
+	cmd := exec.Command(dockerCompose, "-f", filePath+fileName, "stop")
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
