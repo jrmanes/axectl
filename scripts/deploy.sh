@@ -6,4 +6,4 @@ DEF_USER="joseramon"
 USER=${2:-$DEF_USER}
 
 make build
-scp ./bin/jrctl ${USER}@${HOST}:/home/${USER}/
+scp ./bin/axectl ${USER}@${HOST}:/home/${USER}/

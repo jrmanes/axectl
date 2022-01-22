@@ -1,4 +1,4 @@
-module github.com/jrmanes/jrctl
+module github.com/jrmanes/axectl
 
 go 1.17
 

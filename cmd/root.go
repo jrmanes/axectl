@@ -28,41 +28,41 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "jrctl",
-	Short: "jrctl CLI tool",
+	Use:   "axectl",
+	Short: "axectl CLI tool",
 	Long: `
 +--------------------------------------------------+
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMXKNMMMMMNKNMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMNKKNXk0MMMNxXK0KWMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMK0KXKOOdcNMMM0oOXKO0WMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMNkdxkOOkloNMMMMMWOdOOxlKMMMMMMMMMMMM|
-|MMMMMMMMMMMMWKd;;:ldd:OMMMMMMMMNc':;,:xWMMMMMMMMMM|
-|MMMMMMMMMMMWkc,,,,,,';kMMMMMMMKOc;xkl;,lNMMMMMMMMM|
-|MMMMMMMMMMMMx,'',o0Xx:lkNMMMN0k:kWMMMWKxo0MMMMMMMM|
-|MMMMMMMMMMMMMXx0WMMMMWdcd0WKOloNMMMMMMMMMWMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMK:;kx:0MMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMX:...;KMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMWo'..l...lNMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMk,..,XMX,...xWMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMM0:...oWMMMWd...,0MMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMNl...'0MMMMMMMK,...cNMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMWd'...lWMMMMMMMMMWo....dWMMMMMMMMMMM|
-|MMMMMMMMMMMMMK;....0MMMMMMMMMMMMMK'...'0MMMMMMMMMM|
-|MMMMMMMMMMMMMo...cNMMMMMMMMMMMMMMMNc...cMMMMMMMMMM|
-|MMMMMMMMMMMMMM0d0MMMMMMMMMMMMMMMMMMM0dOWMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
-|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|                                                  |
+|              .dx:.                               |
+|             cO00Ok;                              |
+|           .x00OOOkkx.                            |
+|          .d00OOOkkkxl                            |
+|         :kOOOOkkkxl;'                            |
+|      .l00OOOkkkxd:;cc'                           |
+|    'd00OOOOkkkdc',:lol,                          |
+|  ,d000OOOkkkxd,..',:loo:                         |
+|.d000OOOkkkxxxl   ..,:codl.                       |
+|xO0OOOkkkxxxxd,      .;cldo;                      |
+|:kkOOkkkxxxddo.        ':codl'                    |
+| ;xxkkxxxdddd:          .,:lddl.                  |
+|  .cxddddddoo.            .;codd;                 |
+|    .:ddooooc               ':lddl'               |
+|       .,clo,                .,coddc.             |
+|                               .:lddo,.           |
+|                                 ,clddl,          |
+|                                  .;lodo:.        |
+|                                    ,clddl,       |
+|                                     .;codoc.     |
+|                                       ':lddo:.   |
+|                                        .;codoc,  |
+|                                         .,:lool:.|
+|                                           .;cloo:|
+|                                            .,:c;.|
+|                                                  |
+|                                                  |
 +--------------------------------------------------+
 --------------------------------------------------
-jrctl is a set of tools for DevOps/SRE.
+axectl is a set of tools for DevOps/SRE.
 -------------------------------------------------`,
 }
 
@@ -96,7 +96,7 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		configHome := filepath.Join(home, "/.jrctl/")
+		configHome := filepath.Join(home, "/.axectl/")
 		configName := "config"
 		configType := "yml"
 		configPath := filepath.Join(configHome, configName+"."+configType)

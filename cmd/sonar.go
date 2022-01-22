@@ -66,7 +66,7 @@ var sonarCmd = &cobra.Command{
 	Short: "SonarQube command options",
 	Long: `-----------------------------------------------------------------------------------------
 
-📡 jrctl has the command sonar which allows you to have a SonarQube in your local dev env.
+📡 axectl has the command sonar which allows you to have a SonarQube in your local dev env.
 
 Features: 
 - Install docker & docker-compose to run SonarQube and execute scans (not needed if you already have them).
@@ -83,27 +83,27 @@ Go to the parent folder, or specify the package name separated by comas.
 There are different options for sonar:
 - Install needed packages (not needed if you have Docker & docker-compose installed in your system):
 
-jrctl sonar -i
+axectl sonar -i
 
 - Start the service, creating the projects and scan them:
 
-jrctl sonar -s -c --scan -p "someProject" -o "someOrganization"
+axectl sonar -s -c --scan -p "someProject" -o "someOrganization"
 
 Or specify multiple packages separated by comas:
 
-jrctl sonar -s -c --scan -p "someProject1,someProjet2,someProject3" -o "someOrganization"
+axectl sonar -s -c --scan -p "someProject1,someProjet2,someProject3" -o "someOrganization"
 
 - Start the service
 
-jrctl sonar -s -p "someProject" -o "someOrganization"
+axectl sonar -s -p "someProject" -o "someOrganization"
 
 - Start the service creating the projects
 
-jrctl sonar -s -c -p "someProject" -o "someOrganization"
+axectl sonar -s -c -p "someProject" -o "someOrganization"
 
 - Check the status of the service
 
-jrctl sonar --status
+axectl sonar --status
 -----------------------------------------------------------------------------------------`,
 	// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -136,7 +136,7 @@ var (
 	// sonarPass default user admin password to use
 	sonarPass = "admin123."
 	// tokensFolder folder where to store the tokens
-	tokensFolder = "/.jrctl/sonar/tokens/"
+	tokensFolder = "/.axectl/sonar/tokens/"
 	// dockerCompose docker-compose name
 	dockerCompose            = "docker-compose"
 	project, organization, u string
@@ -667,7 +667,7 @@ func createProjectToken() {
 			err = CheckSonarResponse(resp, err)
 			if err != nil {
 				fmt.Println("[ERROR] 🔥 Failed token creation, it's possible that the token already exists in SonarQube, for check it, got to:")
-				fmt.Println("[ERROR] 🔥 Try to check the token in your path: ~/.jrctl/sonar/tokens/ - or check it in the panel:")
+				fmt.Println("[ERROR] 🔥 Try to check the token in your path: ~/.axectl/sonar/tokens/ - or check it in the panel:")
 				fmt.Println("[ERROR] 🔥 http://localhost:9000/account/security")
 				log.Fatal(err)
 			}
@@ -694,7 +694,7 @@ func CheckSonarResponse(resp *http.Response, err error) error {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Store the content insisde ~/.jrctl/sonar/tokens/
+		// Store the content insisde ~/.axectl/sonar/tokens/
 		configHome := filepath.Join(home, tokensFolder)
 		fileInPath := filepath.Join(configHome, token.Name)
 

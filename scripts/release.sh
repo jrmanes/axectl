@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT_NAME=jrctl
+PROJECT_NAME=axectl
 goos=("linux" "windows" "darwin")
 arch=("386" "amd64" "arm64")
 

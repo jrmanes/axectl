@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-PROJECT_NAME=jrctl
+PROJECT_NAME=axectl
 ######################
 # Go
 .PHYONY: run build build_copy test test_cover get docs
@@ -65,7 +65,7 @@ vagrant_reload:
 	VAGRANT_VAGRANTFILE=./infra/Vagrantfile vagrant reload
 
 vagrant_remote_deploy: build_copy
-	scp -P 2222 ./bin/jrctl vagrant@127.0.0.1:.
+	scp -P 2222 ./bin/axectl vagrant@127.0.0.1:.
 
 ######################
 # Docker
@@ -79,17 +79,17 @@ docker_start: docker_build
 docker_status: docker_build
 	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest ls -ltra /app/
 
-docker_jrctl: docker_build
-	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest bash -c /app/jrctl
+docker_axectl: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest bash -c /app/axectl
 
-docker_jrctl_install_sudo: docker_build
+docker_axectl_install_sudo: docker_build
 	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "apt update && apt install -y sudo"
 
-docker_jrctl_sonar: docker_build
-	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/jrctl sonar"
+docker_axectl_sonar: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/axectl sonar"
 
-docker_jrctl_sonar_install: docker_build
-	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/jrctl sonar -i"
+docker_axectl_sonar_install: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/axectl sonar -i"
 
-docker_jrctl_sonar_install_debug: docker_build
-	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/jrctl sonar -i --debug"
+docker_axectl_sonar_install_debug: docker_build
+	docker run -t --rm -v ${PWD}/bin/:/app ${PROJECT_NAME}:latest /bin/bash -c "/app/axectl sonar -i --debug"
