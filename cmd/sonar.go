@@ -430,9 +430,7 @@ func start() {
 
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal(`Please, check that your current user has permissions to execute docker
-			you can add it to the docker group executing: sudo usermod -aG docker $USER
-			After that, please, reboot your system \n`, err)
+		log.Fatal("Please, check that your current user is in the Docker group or you are not using the ports 9000,5432 in your computer\n", err)
 	}
 
 	// Give enough time to allow the service start
