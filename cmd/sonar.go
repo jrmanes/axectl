@@ -37,9 +37,12 @@ import (
 
 // Command struct which contains an info message, command to execute and an array of arguments
 type Command struct {
+	// message provide information about the command to be executed.
 	message string
+	// command base command to execute.
 	command string
-	args    []string
+	// args array of arguments of the command.
+	args []string
 }
 
 // Commands list of commands
@@ -47,9 +50,13 @@ type Commands []Command
 
 // TokenResponse is the struct that we use for our Sonar responses
 type TokenResponse struct {
-	Login     string `json:"login"`
-	Name      string `json:"name"`
-	Token     string `json:"token"`
+	// Login kind of login
+	Login string `json:"login"`
+	// Name of the token
+	Name string `json:"name"`
+	// Token value of the token
+	Token string `json:"token"`
+	// CreatedAt timestamp about the creation
 	CreatedAt string `json:"createdAt"`
 }
 
@@ -100,10 +107,14 @@ piktoctl sonar --status
 -----------------------------------------------------------------------------------------`,
 	// Validate if there is any flag added, if not, we send the user to Usage func
 	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// parse flags
 		flag.Parse()
 		tail := flag.Args()
+		// check if we have less than one args
 		if len(tail) <= 1 {
+			// show usage
 			cmd.Usage()
+			// exit with error 0
 			os.Exit(0)
 		}
 		return nil
@@ -116,13 +127,19 @@ piktoctl sonar --status
 
 // define vars
 var (
-	filePath                 = "/tmp/"
-	fileName                 = "docker-compose.piktochart-sonarqube"
-	sonarUser                = "admin"
-	sonarPass                = "admin123."
-	project, organization, u string
-	tokensFolder             = "/.piktoctl/sonar/tokens/"
+	// filePath where we will store the file
+	filePath = "/tmp/"
+	// fileName of the docker-compose file
+	fileName = "docker-compose.piktochart-sonarqube"
+	// sonarUser default user admin name
+	sonarUser = "admin"
+	// sonarPass default user admin password to use
+	sonarPass = "admin123."
+	// tokensFolder folder where to store the tokens
+	tokensFolder = "/.piktoctl/sonar/tokens/"
+	// dockerCompose docker-compose name
 	dockerCompose            = "docker-compose"
+	project, organization, u string
 )
 
 // init add al flags to the sonarCmd command
