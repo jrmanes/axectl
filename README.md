@@ -67,11 +67,6 @@ jrctl sonar -s -p "someProject" -o "someOrganization"
 jrctl sonar -s -c -p "someProject" -o "someOrganization"
 ```
 
-- With SonarQube running, create the projects and scan them
-```bash
-jrctl sonar -c --scan -p "piktostory" -o "Piktochart"
-```
-
 - Check the status of the service
 ```bash
 jrctl sonar --status 
