@@ -1,4 +1,4 @@
-module github.com/jrmanes/piktoctl
+module github.com/jrmanes/jrctl
 
 go 1.17
 

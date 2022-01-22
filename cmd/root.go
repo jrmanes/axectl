@@ -28,37 +28,41 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "piktoctl",
-	Short: "Piktochart CLI tool",
+	Use:   "jrctl",
+	Short: "jrctl CLI tool",
 	Long: `
-llllllllllllllllllllllllllllllllllllllllllllllllll
-llllllllllllllllllllllllllllllllllllllllllllllllll
-llllllllllllllllllllllllllllllllllllllllllllllllll
-llllllllllllllodxxxxxxxxxxxxxxddllllllllllllllllll
-llllllllllllkXMMMMMMMMMMMMMMMMMMWXOdllllllllllllll
-lllllllllllKMMMMMMMMMMMMMMMMMMMMMMMM0ollllllllllll
-lllllllllldMMMMN00000000000000KXMMMMMNolllllllllll
-llllllllllxMMMMOlllllllllllllllloKMMMMXlllllllllll
-llllllllllxMMMMOllllllllllllllllllXMMMMdllllllllll
-llllllllllxMMMMOllllllllllllllllll0MMMMxllllllllll
-llllllllllxMMMMOllllllllllllllllloWMMMMollllllllll
-llllllllllxMNOxollllllllllllllldOWMMMMOlllllllllll
-lllllllllldxd0XWWWWWWWWWWWWWWWWMMMMMM0llllllllllll
-lllllllllllkWMMMMMMMMMMMMMMMMMMMMMMXxlllllllllllll
-lllllllllldMMMMMNNNNNNNNNNNNNNNX0kolllllllllllllll
-llllllllllxMMMM0llllllldxxxxolllllllllllllllllllll
-llllllllllxMMMMOlllllllKMMMMxlllllllllllllllllllll
-llllllllllxMMMMOlllllllKMMMMxlllllllllllllllllllll
-llllllllllxMMMMOlllllllKMMMMxlllllllllllllllllllll
-lllllllllldMMMMNKKKKKKKWMMMMdlllllllllllllllllllll
-lllllllllll0MMMMMMMMMMMMMMMOllllllllllllllllllllll
-llllllllllllkXMMMMMMMMMMWXxlllllllllllllllllllllll
-llllllllllllllodddddddddllllllllllllllllllllllllll
-llllllllllllllllllllllllllllllllllllllllllllllllll
-llllllllllllllllllllllllllllllllllllllllllllllllll
-llllllllllllllllllllllllllllllllllllllllllllllllll
++--------------------------------------------------+
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMXKNMMMMMNKNMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMNKKNXk0MMMNxXK0KWMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMK0KXKOOdcNMMM0oOXKO0WMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMNkdxkOOkloNMMMMMWOdOOxlKMMMMMMMMMMMM|
+|MMMMMMMMMMMMWKd;;:ldd:OMMMMMMMMNc':;,:xWMMMMMMMMMM|
+|MMMMMMMMMMMWkc,,,,,,';kMMMMMMMKOc;xkl;,lNMMMMMMMMM|
+|MMMMMMMMMMMMx,'',o0Xx:lkNMMMN0k:kWMMMWKxo0MMMMMMMM|
+|MMMMMMMMMMMMMXx0WMMMMWdcd0WKOloNMMMMMMMMMWMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMK:;kx:0MMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMX:...;KMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMWo'..l...lNMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMk,..,XMX,...xWMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMM0:...oWMMMWd...,0MMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMNl...'0MMMMMMMK,...cNMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMWd'...lWMMMMMMMMMWo....dWMMMMMMMMMMM|
+|MMMMMMMMMMMMMK;....0MMMMMMMMMMMMMK'...'0MMMMMMMMMM|
+|MMMMMMMMMMMMMo...cNMMMMMMMMMMMMMMMNc...cMMMMMMMMMM|
+|MMMMMMMMMMMMMM0d0MMMMMMMMMMMMMMMMMMM0dOWMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
+|MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM|
++--------------------------------------------------+
 --------------------------------------------------
-Piktoctl is a set of tools for piktodevs.
+jrctl is a set of tools for DevOps/SRE.
 -------------------------------------------------`,
 }
 
@@ -92,7 +96,7 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		configHome := filepath.Join(home, "/.piktoctl/")
+		configHome := filepath.Join(home, "/.jrctl/")
 		configName := "config"
 		configType := "yml"
 		configPath := filepath.Join(configHome, configName+"."+configType)

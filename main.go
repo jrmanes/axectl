@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/jrmanes/piktoctl/cmd"
+import "github.com/jrmanes/jrctl/cmd"
 
 func main() {
 	cmd.Execute()
