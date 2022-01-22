@@ -596,9 +596,9 @@ volumes:
 
 // createProject generates the project in SonarQube
 func createProject() {
-	fmt.Println("--------------------------------------------------------------")
+	printLine()
 	fmt.Println("💡 The organization to create the project is: ", organization)
-	fmt.Println("--------------------------------------------------------------")
+	printLine()
 
 	projects := strings.Split(project, ",")
 	// crate the project in Sonar
@@ -627,9 +627,9 @@ func createProject() {
 
 // createProjectToken generates the token for the project in SonarQube
 func createProjectToken() {
-	fmt.Println("--------------------------------------------------------")
+	printLine()
 	fmt.Println("💡 The organization to create the token is: ", organization)
-	fmt.Println("--------------------------------------------------------")
+	printLine()
 
 	projects := strings.Split(project, ",")
 	// crate the project in SQ
@@ -656,39 +656,53 @@ func createProjectToken() {
 				log.Fatal(err)
 			}
 
-			// Check response, if it's ok, store the token into the FS
-			if resp.StatusCode == 200 {
-				token := TokenResponse{}
-				err2 := json.NewDecoder(resp.Body).Decode(&token)
-				if err2 != nil {
-					log.Fatal(err)
-				}
-				fmt.Println("[INFO]: ", token.Name, "=", token.Token)
-
-				home, err := os.UserHomeDir()
-				cobra.CheckErr(err)
-
-				// Store the content insisde ~/.piktoctl/sonar/tokens/
-				configHome := filepath.Join(home, tokensFolder)
-				fileInPath := filepath.Join(configHome, token.Name)
-
-				err = CreateFileInPath(configHome, fileInPath)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				tokenFile := filepath.Join(configHome, token.Name)
-				CreateFileWithContent(tokenFile, token.Token)
-			} else {
+			// check the response of SQ
+			err = CheckSonarResponse(resp, err)
+			if err != nil {
 				fmt.Println("[ERROR] 🔥 Failed token creation, it's possible that the token already exists in SonarQube, for check it, got to:")
 				fmt.Println("[ERROR] 🔥 Try to check the token in your path: ~/.piktoctl/sonar/tokens/ - or check it in the panel:")
 				fmt.Println("[ERROR] 🔥 http://localhost:9000/account/security")
+				log.Fatal(err)
 			}
+
 		} else {
 			fmt.Println("📜️ Using existing token for project: ", p)
 		}
-		fmt.Println("--------------------------------------------------------")
+
+		printLine()
 	}
+}
+
+// CheckSonarResponse verify if the response of SQ after generate the token
+func CheckSonarResponse(resp *http.Response, err error) error {
+	// Check response, if it's ok, store the token into the FS
+	if resp.StatusCode == 200 {
+		token := TokenResponse{}
+		err2 := json.NewDecoder(resp.Body).Decode(&token)
+		if err2 != nil {
+			return err
+		}
+		fmt.Println("[INFO]: ", token.Name, "=", token.Token)
+
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		// Store the content insisde ~/.piktoctl/sonar/tokens/
+		configHome := filepath.Join(home, tokensFolder)
+		fileInPath := filepath.Join(configHome, token.Name)
+
+		err = CreateFileInPath(configHome, fileInPath)
+		if err != nil {
+			return err
+		}
+
+		tokenFile := filepath.Join(configHome, token.Name)
+		CreateFileWithContent(tokenFile, token.Token)
+
+		return nil
+	}
+
+	return nil
 }
 
 // GetTokenInFile check the content inside the file and return it
@@ -749,4 +763,9 @@ func detectOS() string {
 		return "linux"
 	}
 	return ""
+}
+
+// printLine use for print the line
+func printLine() {
+	fmt.Println("--------------------------------------------------------------")
 }
