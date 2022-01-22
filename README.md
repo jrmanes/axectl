@@ -119,11 +119,13 @@ sudo cp ./piktoctl /usr/bin/
   - [ ] Delete tokens
   - [ ] Delete all resources created
 - [x] Setup debug argument
-- [ ] Flag to specify the code coverage file
 - [x] Update release from the CLI
 - [x] Remove installation packages for `sonar-scanner`
-- [ ] Refactor
+- [x] Refactor
+- [ ] Flag to specify the code coverage file
 
 ---
 
 Jose Ramon Mañes
+
+---
