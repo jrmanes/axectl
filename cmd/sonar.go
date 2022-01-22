@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -231,7 +232,7 @@ func LinuxPkg(debug bool) {
 
 	// Loop inside all packages and install them one by one
 	for _, p := range packages {
-		fmt.Println("📦 Installing package: ", p)
+		fmt.Println("📦 Installing package: ", "[", p, "]")
 
 		cmd := exec.Command("sudo", "apt", "install", "-y", p)
 		if debug {
@@ -243,8 +244,14 @@ func LinuxPkg(debug bool) {
 		if err != nil {
 			log.Fatal(err)
 		} else {
-			fmt.Println("✅ ", p, " -> successfully installed!")
+			fmt.Println("✅", "[", p, "]", "-> successfully installed!")
 		}
+	}
+
+	// Configure system
+	err = LinuxConfigSystem(debug)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -273,6 +280,51 @@ func MacOSPkg(debug bool) {
 			fmt.Println("✅ ", p, " -> successfully installed!")
 		}
 	}
+}
+
+// LinuxConfigSystem Configure system to execute SonarQube in Linux
+func LinuxConfigSystem(debug bool) error {
+	fmt.Println("\nℹ️  More info: https://docs.docker.com/engine/install/linux-postinstall/")
+	// get current user
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
+
+	// commands list of commands to execute
+	commands := Commands{
+		Command{
+			message: "📦 Add docker group to the user: " + user.Username,
+			command: "sudo",
+			args:    []string{"usermod", "-aG", "docker", user.Username},
+		},
+		Command{
+			message: "📦 Activate the changes to the user's groups: " + user.Username,
+			command: "newgrp",
+			args:    []string{"docker"},
+		},
+	}
+
+	// loop inside all the commands to execute
+	for _, c := range commands {
+		fmt.Println(c.message)
+		c := exec.Command(c.command, c.args...)
+		if debug {
+			c.Stdin = os.Stdin
+			c.Stdout = os.Stdout
+		}
+		err = c.Run()
+		if err != nil {
+			return err
+		}
+	}
+
+	fmt.Println("\nℹ️  In order to refresh your user with the Docker group, you have two options:")
+	fmt.Println("ℹ️  1: Execute the following command: newgrp docker")
+	fmt.Println("ℹ️  2: Or logout/login")
+	fmt.Println("\n✅ All packages have been installed successfully!")
+
+	return nil
 }
 
 // status check the status of the containers
@@ -439,7 +491,7 @@ func stop() {
 // https://docs.sonarqube.org/7.3/HardwareRecommendations.html
 func configureSystem() {
 	fmt.Println("Starting the containers, it can take a while...")
-	fmt.Println("🔧 We are going to configuring system, we need to increase the configuration of: sysctl to -> vm.max_map_count=262144")
+	fmt.Println("🔧 We need going to configuring the system: \n\t https://docs.sonarqube.org/latest/requirements/requirements/ \n\t sysctl to -> vm.max_map_count=262144")
 	fmt.Println("🔓 We need to run as ROOT...")
 
 	// check the os and configure depending on which one is

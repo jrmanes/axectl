@@ -125,3 +125,5 @@ sudo cp ./piktoctl /usr/bin/
 - [ ] Refactor
 
 ---
+
+Jose Ramon Mañes
