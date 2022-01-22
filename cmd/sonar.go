@@ -487,9 +487,9 @@ func stop() {
 	fmt.Println("👋 SonarQube is stopped!")
 }
 
-// configureSystem set the needed path to the sysctl
-// https://docs.sonarqube.org/7.3/HardwareRecommendations.html
-func configureSystem() {
+// ConfigureSystem set the needed path to the sysctl
+// https: //docs.sonarqube.org/latest/requirements/requirements/
+func ConfigureSystem() {
 	fmt.Println("Starting the containers, it can take a while...")
 	fmt.Println("🔧 We need going to configuring the system: \n\t https://docs.sonarqube.org/latest/requirements/requirements/ \n\t sysctl to -> vm.max_map_count=262144")
 	fmt.Println("🔓 We need to run as ROOT...")
