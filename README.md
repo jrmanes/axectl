@@ -8,6 +8,19 @@ As result of the project, we obtain a binary which can be compiled for the diffe
 
 ---
 
+## Build project
+
+To build the project from your side, you need `Go` installed in your computer, and execute:
+
+Remember to check your `OS` and your architecture.
+
+```
+mkdir -p ./bin
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/piktoctl ./
+```
+
+---
+
 ## Sonar
 
 Piktoctl has the command `sonar` which allows you to setup and configure a **SonarQube** in your local dev env.
