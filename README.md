@@ -33,7 +33,7 @@
 +--------------------------------------------------+
 ```
 
-`axectl` is a set of tools for developers, we can create different commands to abstract manual tasks.
+`axectl` is a set of DevOps/SRE tools for developers, we can create different commands to abstract manual tasks.
 
 This tool is written in [Go](https://go.dev/) with the [cobra](https://github.com/spf13/cobra) framework.
 
