@@ -33,6 +33,8 @@
 +--------------------------------------------------+
 ```
 
+## Description
+
 `axectl` is a set of DevOps/SRE tools for developers, we can create different commands to abstract manual tasks.
 
 This tool is written in [Go](https://go.dev/) with the [cobra](https://github.com/spf13/cobra) framework.
@@ -51,6 +53,8 @@ Remember to check your `OS` and your architecture.
 mkdir -p ./bin
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/axectl ./
 ```
+
+Or you can go to the releases page.
 
 ---
 
