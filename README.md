@@ -37,13 +37,12 @@
 # Index
 1. [Description](#description)
 2. [Build project](#build_project)
-3. [Sub paragraph](#subparagraph1)
-4. [Sonar](#paragraph2)
+3. [Sonar](#paragraph2)
    1. [What it does?](#whatitdoes)
-5. [Examples](#examples)
-6. [Sconar Scanner](#sonar-scanner)
-7. [Add to path](#addtopath)
-8. [TODO](#todo)
+4. [Examples](#examples)
+5. [Sconar Scanner](#sonar-scanner)
+6. [Add to path](#addtopath)
+7. [TODO](#todo)
 
 ---
 
