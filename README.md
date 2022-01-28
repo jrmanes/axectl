@@ -32,8 +32,30 @@
 |                                                  |
 +--------------------------------------------------+
 ```
+---
 
-## Description
+# Index
+1. [Description](#description)
+2. [Build project](#build_project)
+3. [Sub paragraph](#subparagraph1)
+4. [Sonar](#paragraph2)
+   1. [What it does?](#whatitdoes)
+5. [Examples](#examples)
+6. [Sconar Scanner](#sonar-scanner)
+7. [Add to path](#addtopath)
+8. [TODO](#todo)
+
+---
+
+## This is the introduction <a name="introduction"></a>
+Some introduction text, formatted in heading 2 style
+
+## Some paragraph <a name="paragraph1"></a>
+The first paragraph text
+
+
+
+## Description <a name="description"></a>
 
 `axectl` is a set of DevOps/SRE tools for developers, we can create different commands to abstract manual tasks.
 
@@ -43,7 +65,7 @@ As result of the project, we obtain a binary which can be compiled for the diffe
 
 ---
 
-## Build project
+## Build project <a name="build_project"></a>
 
 To build the project from your side, you need `Go` installed in your computer, and execute:
 
@@ -58,13 +80,13 @@ Or you can go to the releases page.
 
 ---
 
-## Sonar
+## Sonar <a name="sonar"></a>
 
 axectl has the command `sonar` which allows you to setup and configure a **SonarQube** in your local dev env.
 
 This command is an abstraction to setup and configure the project in **SonarQube**.
 
-### What it does?
+### What it does? <a name="whatitdoes"></a>
 
 The CLI with the command `sonar` uses [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to create the resources needed.
 
@@ -81,7 +103,7 @@ Some [features](#features) are:
 - The flag `-i` also add your user to the `Docker` group.
 - It asks you to restart your computer for changes to take effect.
 
-### Examples
+### Examples <a name="examples"></a>
 
 - Install requirements, this step install all the requirements to run `Docker` and the `sonar-scanner` in your computer. [features](#features)
 - After the installation, you will be prompt to restart your computer, this is because is needed after add your user to the `Docker` group [source](https://docs.docker.com/engine/install/linux-postinstall/)
@@ -116,7 +138,7 @@ axectl sonar -s
 
 ---
 
-### Sonar-scanner Docker
+### Sonar-scanner Docker <a name="sonar-scanner"></a>
 
 
 You can execute the following command in order to run the analysis directly.
@@ -138,7 +160,7 @@ docker run \
 
 ---
 
-## Add to path
+## Add to path <a name="addtopath"></a>
 
 You can easily execute `axectl` anywhere adding the binary to some path that you have configured in your `$PATH`.
 
@@ -152,7 +174,7 @@ sudo cp ./axectl /usr/bin/
 
 ---
 
-## TODO
+## TODO <a name="todo"></a>
 - [x] Install dependencies
 - [x] Start all the containers
 - [x] Check containers status
