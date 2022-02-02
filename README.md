@@ -193,5 +193,3 @@ sudo cp ./axectl /usr/bin/
 ---
 
 Jose Ramon Mañes
-
----
